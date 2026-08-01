@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    image: discover-italy:latest
+    container_name: discover-italy
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:3000/healthz"]
+      interval: 30s
+      timeout: 4s
+      retries: 3
+      start_period: 5s
+    # The app fetches landmark photos from Wikipedia at runtime. Without
+    # outbound network it still works — it serves generated placeholders.
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
