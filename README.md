@@ -23,10 +23,10 @@ transcribed from that document, and every block carries the page it came from.
 docker compose up --build
 # or:
 docker build -t discover-italy .
-docker run --rm -p 3000:3000 discover-italy
+docker run --rm -p 4041:4041 discover-italy
 ```
 
-Then open <http://localhost:3000>.
+Then open <http://localhost:4041>.
 
 ### Without Docker
 
@@ -56,19 +56,19 @@ straight out of `node_modules` at `/vendor/…`, so the page never depends on a 
 
 The whole document is available as JSON — the front end boots from `/api/content`.
 
-| Endpoint | What it returns |
-| --- | --- |
-| `GET /api/content` | everything in one payload |
-| `GET /api/overview` | the country introduction (PDF p.1) |
-| `GET /api/regions` | all 20 regions, flagged with `inGuide` |
-| `GET /api/regions/:name` | one region + its guide chain |
-| `GET /api/planning` | seasons, best month, trip lengths (PDF pp.1–2) |
-| `GET /api/rome` | Rome and its five attractions |
+| Endpoint                        | What it returns                                                               |
+| ------------------------------- | ----------------------------------------------------------------------------- |
+| `GET /api/content`              | everything in one payload                                                     |
+| `GET /api/overview`             | the country introduction (PDF p.1)                                            |
+| `GET /api/regions`              | all 20 regions, flagged with `inGuide`                                        |
+| `GET /api/regions/:name`        | one region + its guide chain                                                  |
+| `GET /api/planning`             | seasons, best month, trip lengths (PDF pp.1–2)                                |
+| `GET /api/rome`                 | Rome and its five attractions                                                 |
 | `GET /api/rome/attractions/:id` | one attraction (`colosseum`, `trevi`, `pantheon`, `vatican`, `spanish-steps`) |
-| `GET /api/vatican` | hotspots and masterpieces (PDF pp.6–17) |
-| `GET /api/quiz` | the ten questions |
-| `GET /api/image/:title?w=` | see below |
-| `GET /healthz` | liveness, used by the Docker healthcheck |
+| `GET /api/vatican`              | hotspots and masterpieces (PDF pp.6–17)                                       |
+| `GET /api/quiz`                 | the ten questions                                                             |
+| `GET /api/image/:title?w=`      | see below                                                                     |
+| `GET /healthz`                  | liveness, used by the Docker healthcheck                                      |
 
 ### `/api/image/:title`
 

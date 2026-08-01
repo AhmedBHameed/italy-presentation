@@ -18,7 +18,7 @@ FROM node:20-alpine AS runtime
 RUN apk add --no-cache tini
 
 ENV NODE_ENV=production \
-    PORT=3000 \
+    PORT=4041 \
     HOST=0.0.0.0
 
 WORKDIR /app
@@ -32,10 +32,10 @@ COPY public ./public
 # Run unprivileged. The `node` user ships with the official image.
 USER node
 
-EXPOSE 3000
+EXPOSE 4041
 
 HEALTHCHECK --interval=30s --timeout=4s --start-period=5s --retries=3 \
-  CMD wget -q -O- http://127.0.0.1:3000/healthz > /dev/null || exit 1
+  CMD wget -q -O- http://127.0.0.1:4041/healthz > /dev/null || exit 1
 
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["node", "server.js"]

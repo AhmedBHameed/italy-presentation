@@ -8,7 +8,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "docker:build": "docker build -t discover-italy .",
-    "docker:run": "docker run --rm -p 3000:3000 --name discover-italy discover-italy"
+    "docker:run": "docker run --rm -p 4041:4041 --name discover-italy discover-italy"
   },
   "engines": {
     "node": ">=18"
