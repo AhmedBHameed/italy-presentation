@@ -7,7 +7,7 @@
 (() => {
   'use strict';
 
-  const { $, esc, rich, imgTag } = UI;
+  const { $, $$, esc, rich, imgTag } = UI;
 
   /** Which map region a place name belongs to, for cross-linking. */
   const PLACE_TO_REGION = {
@@ -15,6 +15,8 @@
     Milan: 'Lombardia',
     Naples: 'Campania',
     'Amalfi Coast': 'Campania',
+    Positano: 'Campania',
+    Amalfi: 'Campania',
     Florence: 'Toscana',
     Pisa: 'Toscana',
     Siena: 'Toscana',
@@ -28,8 +30,10 @@
     Milan: 'Milan',
     Naples: 'Naples',
     'Amalfi Coast': 'Amalfi_Coast',
+    Positano: 'Positano',
+    Amalfi: 'Amalfi',
     Florence: 'Florence',
-    Pisa: 'Pisa',
+    Pisa: 'Leaning_Tower_of_Pisa',
     Siena: 'Siena',
     // The 'Tuscany' article leads with a locator map; this leads with cypress hills.
     Tuscany: "Val_d'Orcia",
@@ -48,7 +52,6 @@
   async function boot() {
     const bootNote = $('#bootNote');
     try {
-      bootNote.textContent = 'reading Italy.pdf…';
       const [content] = await Promise.all([
         fetch('/api/content').then((r) => {
           if (!r.ok) throw new Error(`content ${r.status}`);
@@ -67,8 +70,8 @@
       renderPlanning();
       renderRome();
       renderVatican();
-      renderQuiz();
-      renderFooter();
+      renderDestinations();
+      renderColophon();
 
       UI.initChrome();
       UI.observeReveals();
@@ -87,7 +90,7 @@
 
   function renderHero() {
     const o = DATA.overview;
-    $('#heroSource').textContent = DATA.meta.sourceDocument;
+    $('#heroKicker').textContent = DATA.meta.subtitle;
     $('#heroLede').textContent = o.lede;
     $('#heroFigures').innerHTML = o.keyFigures
       .map(
@@ -117,7 +120,7 @@
 
     $('#landmarkChips').addEventListener('click', (e) => {
       const chip = e.target.closest('.landmark-chip');
-      if (chip) UI.openImage(chip.dataset.wiki, chip.dataset.name, 'Named in the guide as one of Italy’s famous landmarks.');
+      if (chip) UI.openImage(chip.dataset.wiki, chip.dataset.name, 'One of Italy’s most famous landmarks.');
     });
   }
 
@@ -126,18 +129,23 @@
    * =================================================================== */
 
   function renderAtlas() {
-    const guideNames = Object.keys(DATA.guideRegions);
+    const guideNames = Object.keys(DATA.guideRegions).sort(
+      (a, b) => DATA.guideRegions[a].order - DATA.guideRegions[b].order
+    );
 
     ItalyMap.init({
       guideRegions: guideNames,
+      cityPins: DATA.cityPins,
       onSelect: (name) => (name ? showDossier(name) : hideDossier()),
     });
 
-    // Shortcut buttons for the five regions named in the guide.
     $('#guideShortcuts').innerHTML =
-      `<div style="width:100%;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:2px">In the guide</div>` +
+      '<div class="shortcut-label">The route, in order</div>' +
       guideNames
-        .map((n) => `<button data-region="${esc(n)}">${esc(DATA.guideRegions[n].displayName)}</button>`)
+        .map(
+          (n, i) =>
+            `<button data-region="${esc(n)}"><i>${i + 1}</i>${esc(DATA.guideRegions[n].displayName)}</button>`
+        )
         .join('');
 
     $('#guideShortcuts').addEventListener('click', (e) => {
@@ -145,10 +153,18 @@
       if (btn) ItalyMap.select(btn.dataset.region);
     });
 
-    // City cards inside the dossier open a picture.
     $('#dossier').addEventListener('click', (e) => {
       const card = e.target.closest('.city-card');
-      if (card) UI.openImage(card.dataset.wiki, card.dataset.name, card.dataset.note);
+      if (card) {
+        UI.openImage(card.dataset.wiki, card.dataset.name, card.dataset.note);
+        return;
+      }
+      const jump = e.target.closest('[data-jump]');
+      if (jump) {
+        const { jump: sectionId, dest } = jump.dataset;
+        UI.scrollToEl(`#${sectionId}`);
+        if (dest) setTimeout(() => selectDestination(dest), 500);
+      }
     });
   }
 
@@ -156,7 +172,6 @@
     const info = DATA.regionInfo[name];
     if (!info) return;
     const guide = DATA.guideRegions[name] || null;
-    const density = Math.round(info.population / info.areaKm2);
 
     const chainHtml = guide
       ? `<div class="city-chain">${guide.chain
@@ -176,34 +191,48 @@
           ${imgTag(c.wiki, c.name, 400)}
           <span>
             <b>${esc(c.name)}</b>
-            <small>${esc(c.note || 'Named in the guide.')}</small>
+            <small>${esc(c.note)}</small>
           </span>
         </button>`
           )
           .join('')}</div>`
       : '';
 
+    const highlightsHtml =
+      guide && guide.highlights?.length
+        ? `<div class="dossier-label">What you came for</div>
+           <div class="highlight-chips">
+             ${guide.highlights.map((h) => `<span>${esc(h)}</span>`).join('')}
+           </div>`
+        : '';
+
+    const jumpHtml = guide
+      ? `<button class="btn btn-primary btn-sm dossier-jump" data-jump="${esc(guide.sectionId)}"
+                 ${guide.destinationId ? `data-dest="${esc(guide.destinationId)}"` : ''}>
+           Open the chapter →
+         </button>`
+      : '';
+
     $('#dossier').innerHTML = `
       <div class="eyebrow">Regione</div>
-      ${guide ? '<div class="badge-guide">★ in the guide</div>' : ''}
+      ${
+        guide
+          ? `<div class="badge-row">
+               <span class="badge-guide">★ stop ${guide.order} on the route</span>
+               <span class="badge-days">${esc(guide.days)}</span>
+             </div>`
+          : '<div class="badge-row"><span class="badge-off">not on this route</span></div>'
+      }
       <h3 class="dossier-name">${esc(ItalyMap.shortName(name))}</h3>
       <div class="dossier-sub">${esc(info.subtitle)}</div>
 
-      <div class="stat-row">
-        <div class="stat"><label>Capital</label><div class="value">${esc(info.capital)}</div></div>
-        <div class="stat"><label>Population</label><div class="value">${info.population.toLocaleString('en-US')}</div></div>
-        <div class="stat"><label>Area</label><div class="value">${info.areaKm2.toLocaleString('en-US')} km²</div></div>
-        <div class="stat"><label>Density</label><div class="value">${density}/km²</div></div>
-      </div>
-
+      ${guide ? `<p class="dossier-summary">${esc(guide.summary)}</p>` : ''}
       ${guide ? `<div class="dossier-label">Where the guide sends you</div>${chainHtml}${citiesHtml}` : ''}
+      ${highlightsHtml}
 
       <div class="dossier-label">Field notes</div>
       <div class="dossier-text">${esc(info.fact)}</div>
-
-      <span class="source-tag">${
-        guide ? esc(guide.source) : 'Population and area are rounded teaching figures, not from Italy.pdf.'
-      }</span>
+      ${jumpHtml}
     `;
     $('#dossier').classList.add('visible');
     $('#infoEmpty').style.display = 'none';
@@ -218,7 +247,7 @@
     const a = DATA.amalfiNote;
     $('#amalfiNote').innerHTML = `
       <div class="amalfi-copy">
-        <div class="eyebrow">Note · ${esc(a.source)}</div>
+        <div class="eyebrow">Note</div>
         <h3>${esc(a.title)}</h3>
         <p>${esc(a.text)}</p>
         <div class="amalfi-badge">🏛 ${esc(a.badge)}</div>
@@ -226,8 +255,7 @@
       <div class="amalfi-photo" data-wiki="${esc(a.wiki)}">${imgTag(a.wiki, a.title)}</div>
     `;
     $('#amalfiNote').addEventListener('click', (e) => {
-      const photo = e.target.closest('.amalfi-photo');
-      if (photo) UI.openImage(a.wiki, a.title, a.text);
+      if (e.target.closest('.amalfi-photo')) UI.openImage(a.wiki, a.title, a.text);
     });
   }
 
@@ -238,9 +266,24 @@
   function renderPlanning() {
     const p = DATA.planning;
 
+    $('#planningHeadline').textContent = p.headline;
+    $('#planningLede').textContent = p.lede;
+    $('#planningBody').textContent = p.body;
     $('#planningQuestion').textContent = p.question;
     $('#planningAnswer').textContent = p.answer;
+    $('#seasonQuestion').textContent = p.seasonQuestion;
     $('#seasonIntro').textContent = p.seasonIntro;
+
+    $('#corePoints').innerHTML = p.corePoints
+      .map(
+        (c) => `
+      <div class="core-point">
+        <div class="core-icon">${c.icon}</div>
+        <b>${esc(c.label)}</b>
+        <p>${esc(c.text)}</p>
+      </div>`
+      )
+      .join('');
 
     $('#decisionGrid').innerHTML = p.decisions
       .map(
@@ -253,11 +296,11 @@
       )
       .join('');
 
-    /* ---- seasons ---- */
+    /* ---- Decision 01 · seasons ---- */
     $('#seasonTabs').innerHTML = p.seasons
       .map(
-        (s, i) => `
-      <button class="season-tab${i === 2 ? ' active' : ''}" data-season="${esc(s.id)}" role="tab">
+        (s) => `
+      <button class="season-tab${s.recommended ? ' active' : ''}" data-season="${esc(s.id)}" role="tab">
         ${s.recommended ? '<span class="rec">best for most</span>' : ''}
         <b>${esc(s.name)}</b>
         <small>${esc(s.months)}</small>
@@ -266,25 +309,43 @@
       .join('');
 
     $('#monthStrip').innerHTML = MONTHS.map(
-      (m, i) => `<div class="month${i === 8 ? ' best' : ''}" data-month="${i}">${m}</div>`
+      (m, i) => `<div class="month" data-month="${i}">${m}</div>`
     ).join('');
+
+    const crowdWord = (n) => ['', 'fewest', 'fewer', 'busy', 'biggest'][n] || '—';
+    const priceWord = (n) => ['', 'lowest', 'lower', 'high', 'highest'][n] || '—';
 
     function selectSeason(id) {
       const s = p.seasons.find((x) => x.id === id);
       if (!s) return;
 
-      UI.$$('.season-tab').forEach((t) => t.classList.toggle('active', t.dataset.season === id));
+      $$('.season-tab').forEach((t) => t.classList.toggle('active', t.dataset.season === id));
 
-      UI.$$('.month').forEach((node) => {
+      const starMonth = s.bestMonth ? MONTHS.indexOf(s.bestMonth.month.slice(0, 3)) : -1;
+      $$('.month').forEach((node) => {
         const i = Number(node.dataset.month);
-        node.className = 'month' + (i === 8 ? ' best' : '') + (s.monthIndices.includes(i) ? ` on ${s.tone}` : '');
+        node.className =
+          'month' +
+          (s.monthIndices.includes(i) ? ` on ${s.tone}` : '') +
+          (i === starMonth ? ' best' : '');
       });
+
+      const best = s.bestMonth
+        ? `<div class="best-month">
+             <div class="best-month-head">
+               <span class="star">★</span>
+               <b>${esc(s.bestMonth.claim)}</b>
+             </div>
+             <ul>${s.bestMonth.reasons.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
+           </div>`
+        : '';
 
       $('#seasonDetail').innerHTML = `
         <div>
           <div class="season-headline">${esc(s.headline)}</div>
           <p>${esc(s.detail)}</p>
           <ul class="season-points">${s.points.map((pt) => `<li>${esc(pt)}</li>`).join('')}</ul>
+          ${best}
         </div>
         <div class="meters">
           <div>
@@ -303,48 +364,33 @@
 
       const widths = [(s.crowds / 4) * 100, (s.price / 4) * 100, (s.monthIndices.length / 12) * 100];
       requestAnimationFrame(() => {
-        UI.$$('#seasonDetail .meter-fill').forEach((f, i) => (f.style.width = `${widths[i]}%`));
+        $$('#seasonDetail .meter-fill').forEach((f, i) => (f.style.width = `${widths[i]}%`));
       });
     }
-
-    const crowdWord = (n) => ['', 'fewest', 'fewer', 'busy', 'biggest'][n] || '—';
-    const priceWord = (n) => ['', 'lowest', 'lower', 'high', 'highest'][n] || '—';
 
     $('#seasonTabs').addEventListener('click', (e) => {
       const tab = e.target.closest('.season-tab');
       if (tab) selectSeason(tab.dataset.season);
     });
-    selectSeason('shoulder');
+    selectSeason((p.seasons.find((s) => s.recommended) || p.seasons[0]).id);
 
-    /* ---- September spotlight ---- */
-    const b = p.bestMonth;
-    $('#septemberSpotlight').innerHTML = `
-      <div class="spotlight-photo">
-        <div class="spotlight-temp"><b>${b.temperature.c}°C</b><small>${b.temperature.f}°F</small></div>
-        ${imgTag("Val_d'Orcia", 'The Val d’Orcia, Tuscany, in September')}
-      </div>
-      <div class="spotlight-copy">
-        <div class="eyebrow">The verdict · ${esc(b.source)}</div>
-        <h3>${esc(b.claim)}</h3>
-        <ul class="reason-list">
-          ${b.reasons.map((r) => `<li><span class="ricon">${r.icon}</span><span>${esc(r.text)}</span></li>`).join('')}
-        </ul>
-      </div>`;
-
-    /* ---- durations ---- */
-    const d = p.durations;
-    $('#durationQuestion').textContent = d.question;
-    $('#durationToggle').innerHTML = d.options
-      .map((o, i) => `<button data-duration="${esc(o.id)}" class="${i === 0 ? 'active' : ''}">${o.days} days</button>`)
+    /* ---- Decision 02 · how long ---- */
+    $('#durationQuestion').textContent = p.durationQuestion;
+    $('#durationAnswer').textContent = p.durationAnswer;
+    $('#durationToggle').innerHTML = p.durations
+      .map(
+        (o, i) =>
+          `<button data-duration="${esc(o.id)}" class="${i === 0 ? 'active' : ''}">${esc(o.days)} days</button>`
+      )
       .join('');
 
     function selectDuration(id) {
-      const o = d.options.find((x) => x.id === id);
+      const o = p.durations.find((x) => x.id === id);
       if (!o) return;
-      UI.$$('#durationToggle button').forEach((b2) => b2.classList.toggle('active', b2.dataset.duration === id));
+      $$('#durationToggle button').forEach((b) => b.classList.toggle('active', b.dataset.duration === id));
 
       $('#durationDetail').innerHTML = `
-        <div class="eyebrow">${esc(o.title)}</div>
+        <div class="eyebrow">${esc(o.title)}${o.recommended ? ' · recommended' : ''}</div>
         <p class="summary">${esc(o.summary)}</p>
         <div class="itinerary">
           ${o.itineraries
@@ -365,15 +411,14 @@
             </div>`
             )
             .join('')}
-        </div>
-        <span class="source-tag">${esc(d.source)}</span>`;
+        </div>`;
     }
 
     $('#durationToggle').addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-duration]');
       if (btn) selectDuration(btn.dataset.duration);
     });
-    selectDuration(d.options[0].id);
+    selectDuration(p.durations[0].id);
 
     // Clicking a stop flies the map to its region.
     $('#durationDetail').addEventListener('click', (e) => {
@@ -384,6 +429,43 @@
       UI.scrollToEl('#regions');
       setTimeout(() => ItalyMap.select(region), 550);
     });
+
+    /* ---- Cost ---- */
+    $('#costPanel').innerHTML = `
+      <div class="eyebrow">Decision 03</div>
+      <h3>${esc(p.costQuestion)}</h3>
+      <div class="cost-figure">${esc(p.cost.display)}</div>
+      <p class="muted">${esc(p.cost.note)}</p>
+      <div class="cost-bar">
+        <span style="left:0">${p.cost.currency}0</span>
+        <i></i>
+        <span style="right:0">${p.cost.currency}4k</span>
+      </div>`;
+    requestAnimationFrame(() => {
+      const bar = $('#costPanel .cost-bar i');
+      if (bar) {
+        bar.style.left = `${(p.cost.low / 4000) * 100}%`;
+        bar.style.width = `${((p.cost.high - p.cost.low) / 4000) * 100}%`;
+      }
+    });
+
+    /* ---- Booking order ---- */
+    $('#bookingPanel').innerHTML = `
+      <div class="eyebrow">Decision 04</div>
+      <h3>${esc(p.bookingQuestion)}</h3>
+      <p class="muted">${esc(p.bookingAnswer)}</p>
+      <ol class="booking-steps">
+        ${p.bookingSteps
+          .map(
+            (s) => `
+          <li>
+            <span class="step-n">${s.n}</span>
+            <span class="step-icon">${s.icon}</span>
+            <span><b>${esc(s.label)}</b><small>${esc(s.text)}</small></span>
+          </li>`
+          )
+          .join('')}
+      </ol>`;
   }
 
   /* ======================================================================
@@ -393,7 +475,8 @@
   function renderRome() {
     const r = DATA.rome;
     $('#romeTitle').textContent = r.title;
-    $('#romeNickname').textContent = r.nickname;
+    $('#romeRegion').textContent = r.region;
+    $('#romeDays').textContent = r.days;
     $('#romeIntro').textContent = r.intro;
 
     $('#attractionGrid').innerHTML = r.attractions
@@ -409,7 +492,7 @@
           <div class="card-italian">${esc(a.italian)}</div>
           <div class="card-title">${esc(a.name)}</div>
           <div class="card-tagline">${esc(a.tagline)}</div>
-          <span class="card-cta">Open the file</span>
+          <span class="card-cta">Open</span>
         </div>
       </button>`
       )
@@ -419,6 +502,92 @@
       const card = e.target.closest('[data-attraction]');
       if (card) openAttraction(card.dataset.attraction);
     });
+
+    /* ---- Walking route ---- */
+    $('#walkTitle').textContent = r.walkTitle;
+    $('#walkIntro').textContent = r.walkIntro;
+    $('#walkTotal').innerHTML = `
+      <b>${r.walkTotal.km} km</b>
+      <small>${esc(r.walkTotal.minutes)} min walking</small>`;
+
+    $('#walkRoute').innerHTML = r.walkingRoute
+      .map((node) =>
+        node.leg
+          ? `<div class="walk-leg">
+               <span class="walk-line"></span>
+               <span class="walk-leg-text">${node.leg.km} km · ${esc(node.leg.time)}</span>
+             </div>`
+          : `<button class="walk-stop" data-wiki="${esc(node.wiki)}" data-name="${esc(node.name)}">
+               ${imgTag(node.wiki, node.name, 400)}
+               <span>${esc(node.name)}</span>
+             </button>`
+      )
+      .join('');
+
+    $('#walkRoute').addEventListener('click', (e) => {
+      const stop = e.target.closest('.walk-stop');
+      if (stop) UI.openImage(stop.dataset.wiki, stop.dataset.name, '');
+    });
+
+    /* ---- Where to stay ---- */
+    $('#stayTitle').textContent = r.stayTitle;
+    $('#stayGrid').innerHTML = renderStayCards(r.stayAreas);
+    $('#stayGrid').addEventListener('click', (e) => {
+      const card = e.target.closest('[data-wiki]');
+      if (card) UI.openImage(card.dataset.wiki, card.dataset.name, '');
+    });
+
+    /* ---- Transport ---- */
+    $('#transportTitle').textContent = r.transportTitle;
+    $('#transportIntro').textContent = r.transportIntro;
+    $('#transportList').innerHTML = renderTransport(r.transport);
+
+    /* ---- Food ---- */
+    $('#foodTitle').textContent = r.foodTitle;
+    $('#foodIntro').textContent = r.foodIntro;
+    $('#foodGrid').innerHTML = r.food
+      .map(
+        (f) => `
+      <button class="food-item" data-wiki="${esc(f.wiki)}" data-name="${esc(f.name)}">
+        <div class="food-media">${imgTag(f.wiki, f.name, 400)}</div>
+        <span>${esc(f.name)}</span>
+      </button>`
+      )
+      .join('');
+    $('#foodGrid').addEventListener('click', (e) => {
+      const item = e.target.closest('.food-item');
+      if (item) UI.openImage(item.dataset.wiki, item.dataset.name, '');
+    });
+  }
+
+  function renderStayCards(areas) {
+    return areas
+      .map(
+        (s) => `
+      <div class="stay-card" data-wiki="${esc(s.wiki)}" data-name="${esc(s.name)}">
+        <div class="stay-media">${imgTag(s.wiki, s.name, 400)}</div>
+        <div class="stay-copy">
+          ${s.badge ? `<span class="stay-badge">${esc(s.badge)}</span>` : ''}
+          <b>${esc(s.name)}</b>
+          ${s.subtitle ? `<small class="stay-sub">${esc(s.subtitle)}</small>` : ''}
+          <p>${esc(s.text)}</p>
+          ${s.hotel ? `<div class="stay-hotel">🏨 ${esc(s.hotel)}</div>` : ''}
+        </div>
+      </div>`
+      )
+      .join('');
+  }
+
+  function renderTransport(list) {
+    return list
+      .map(
+        (t) => `
+      <div class="transport-item">
+        <span class="t-icon">${t.icon}</span>
+        <span><b>${esc(t.name)}</b><small>${esc(t.text)}</small></span>
+      </div>`
+      )
+      .join('');
   }
 
   function openAttraction(id) {
@@ -426,7 +595,7 @@
     if (!a) return;
 
     const facts = a.facts?.length
-      ? `<div class="modal-sub">What the guide records</div>
+      ? `<div class="modal-sub">Interesting facts</div>
          <ul class="fact-list">
            ${a.facts.map((f) => `<li><span class="ficon">${f.icon}</span><span>${rich(f.text)}</span></li>`).join('')}
          </ul>`
@@ -434,7 +603,7 @@
 
     const legend = a.legend
       ? `<div class="coin-game">
-           <h4>${esc(a.legendTitle || 'The legend')}</h4>
+           <h4>${esc(a.legendTitle)}</h4>
            <p class="muted">Choose how many coins to throw.</p>
            <div class="coin-buttons">
              ${a.legend
@@ -479,24 +648,21 @@
         ${facts}
         ${gallery}
         ${deepDive}
-        <div class="modal-source">Source · ${esc(a.source)}</div>
       </div>
     `);
 
-    // Gallery thumbnails
-    UI.$$('#modalBody .modal-gallery figure').forEach((fig) => {
+    $$('#modalBody .modal-gallery figure').forEach((fig) => {
       fig.style.cursor = 'zoom-in';
       fig.addEventListener('click', () => UI.openImage(fig.dataset.wiki, a.name, fig.dataset.caption));
     });
 
-    // Trevi coin toss
     const outcome = $('#coinOutcome');
     if (outcome) {
-      UI.$$('#modalBody .coin-btn').forEach((btn) => {
+      $$('#modalBody .coin-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
           const n = Number(btn.dataset.coins);
           const entry = a.legend.find((l) => l.coins === n);
-          UI.$$('#modalBody .coin-btn').forEach((b) => b.classList.toggle('active', b === btn));
+          $$('#modalBody .coin-btn').forEach((b) => b.classList.toggle('active', b === btn));
           outcome.classList.remove('show');
           outcome.innerHTML = `<span class="coins">${entry.icon}</span><span>${rich(entry.text)}</span>`;
           requestAnimationFrame(() => outcome.classList.add('show'));
@@ -530,7 +696,7 @@
       const h = v.hotspots.find((x) => x.id === id);
       if (!h) return;
 
-      UI.$$('.hotspot').forEach((g) => g.classList.toggle('active', g.dataset.hotspot === id));
+      $$('.hotspot').forEach((g) => g.classList.toggle('active', g.dataset.hotspot === id));
 
       $('#planInfo').innerHTML = `
         <div class="eyebrow">Vatican City</div>
@@ -569,15 +735,42 @@
 
     showHotspot('basilica');
 
-    /* ---- masterpieces ---- */
+    /* ---- The Sistine ceiling: nine scenes ---- */
+    const c = v.ceiling;
+    $('#ceilingPanel').innerHTML = `
+      <div class="ceiling-copy">
+        <div class="eyebrow">Nine scenes from Genesis</div>
+        <h3>${esc(c.title)}</h3>
+        <p class="muted">${esc(c.intro)}</p>
+        <ol class="scene-list">
+          ${c.scenes
+            .map(
+              (s, i) =>
+                `<li class="${i === c.famousIndex ? 'famous' : ''}"><span class="scene-n">${String(i + 1).padStart(2, '0')}</span>${esc(s)}${
+                  i === c.famousIndex ? '<span class="scene-tag">most famous</span>' : ''
+                }</li>`
+            )
+            .join('')}
+        </ol>
+        <p class="ceiling-outro">${esc(c.outro)}</p>
+      </div>
+      <button class="ceiling-photo" data-wiki="${esc(c.wiki)}">
+        ${imgTag(c.wiki, c.title)}
+      </button>`;
+
+    $('#ceilingPanel').addEventListener('click', (e) => {
+      if (e.target.closest('.ceiling-photo')) UI.openImage(c.wiki, c.title, c.intro);
+    });
+
+    /* ---- Masterpieces ---- */
     $('#masterpieceRow').innerHTML = v.masterpieces
       .map(
         (m) => `
-      <button class="masterpiece" data-wiki="${esc(m.wiki)}" data-title="${esc(m.title)}" data-note="${esc(m.note)}">
+      <button class="masterpiece" data-id="${esc(m.id)}">
         ${imgTag(m.wiki, m.title)}
         <span class="masterpiece-cap">
           <b>${esc(m.title)}</b>
-          <small>${esc(m.where)}</small>
+          <small>${esc(m.where)}${m.dates && m.artist ? ` · ${esc(m.dates)}` : ''}</small>
         </span>
       </button>`
       )
@@ -585,108 +778,290 @@
 
     $('#masterpieceRow').addEventListener('click', (e) => {
       const btn = e.target.closest('.masterpiece');
-      if (btn) UI.openImage(btn.dataset.wiki, btn.dataset.title, btn.dataset.note);
+      if (!btn) return;
+      const m = v.masterpieces.find((x) => x.id === btn.dataset.id);
+      if (!m) return;
+      UI.openModal(`
+        <div class="modal-hero">
+          ${imgTag(m.wiki, m.title, 1600)}
+          <div class="modal-hero-cap">
+            <div class="modal-italian">${esc(m.where)}</div>
+            <h2>${esc(m.title)}</h2>
+          </div>
+        </div>
+        <div class="modal-content">
+          ${
+            m.artist
+              ? `<div class="attribution"><b>${esc(m.artist)}</b>${m.dates ? `<span>${esc(m.dates)}</span>` : ''}</div>`
+              : ''
+          }
+          <p class="modal-lead">${esc(m.note)}</p>
+        </div>`);
     });
   }
 
   /* ======================================================================
-   * 6 · Quiz
+   * 6 · The rest of the route
    * =================================================================== */
 
-  function renderQuiz() {
-    const questions = DATA.quiz;
-    const answered = new Map();
-    const LETTERS = ['A', 'B', 'C', 'D'];
+  function renderDestinations() {
+    const list = DATA.destinations;
 
-    $('#quizTotal').textContent = questions.length;
-
-    $('#quizList').innerHTML = questions
+    $('#destTabs').innerHTML = list
       .map(
-        (q, i) => `
-      <div class="q reveal" data-q="${esc(q.id)}">
-        <div class="q-num">Question ${String(i + 1).padStart(2, '0')}</div>
-        <div class="q-text">${esc(q.question)}</div>
-        <div class="q-options">
-          ${q.options
-            .map(
-              (opt, oi) =>
-                `<button class="q-opt" data-index="${oi}"><span class="key">${LETTERS[oi]}</span><span>${esc(opt)}</span></button>`
-            )
-            .join('')}
-        </div>
-        <div class="q-feedback"></div>
-      </div>`
+        (d, i) => `
+      <button class="dest-tab${i === 0 ? ' active' : ''}" data-dest="${esc(d.id)}" role="tab">
+        <span class="dest-tab-media">${imgTag(d.hero.wiki, d.name, 400)}</span>
+        <span class="dest-tab-copy">
+          <b>${esc(d.name)}</b>
+          <small>${esc(d.region)} · ${esc(d.days)}</small>
+        </span>
+      </button>`
       )
       .join('');
 
-    function updateScore() {
-      const correct = Array.from(answered.values()).filter(Boolean).length;
-      $('#quizScore').textContent = correct;
-      $('#quizTrackFill').style.width = `${(answered.size / questions.length) * 100}%`;
-
-      const result = $('#quizResult');
-      if (answered.size === questions.length) {
-        const pct = Math.round((correct / questions.length) * 100);
-        const verdict =
-          pct === 100 ? 'Perfetto! Every answer right.'
-          : pct >= 70 ? 'Bravo — you know your Italy.'
-          : pct >= 40 ? 'Not bad. Scroll back up and reread a chapter or two.'
-          : 'Worth another read — every answer is on this page.';
-        result.innerHTML = `
-          <h3>${correct} out of ${questions.length}</h3>
-          <p>${esc(verdict)}</p>`;
-        result.classList.add('show');
-        result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      } else {
-        result.classList.remove('show');
-      }
-    }
-
-    $('#quizList').addEventListener('click', (e) => {
-      const btn = e.target.closest('.q-opt');
-      if (!btn) return;
-      const card = btn.closest('.q');
-      const q = questions.find((x) => x.id === card.dataset.q);
-      if (!q || answered.has(q.id)) return;
-
-      const picked = Number(btn.dataset.index);
-      const isRight = picked === q.answer;
-      answered.set(q.id, isRight);
-
-      UI.$$('.q-opt', card).forEach((b, i) => {
-        b.disabled = true;
-        if (i === q.answer) b.classList.add('correct');
-        else if (i === picked) b.classList.add('incorrect');
-      });
-
-      card.classList.add('answered', isRight ? 'right' : 'wrong');
-      UI.$('.q-feedback', card).innerHTML = `
-        <b>${isRight ? '✓ Correct.' : '✕ Not quite.'}</b> ${esc(q.because)}
-        <span class="src">${esc(q.source)}</span>`;
-
-      updateScore();
+    $('#destTabs').addEventListener('click', (e) => {
+      const tab = e.target.closest('.dest-tab');
+      if (tab) selectDestination(tab.dataset.dest);
     });
 
-    $('#quizReset').addEventListener('click', () => {
-      answered.clear();
-      UI.$$('.q').forEach((card) => {
-        card.classList.remove('answered', 'right', 'wrong');
-        UI.$('.q-feedback', card).innerHTML = '';
-        UI.$$('.q-opt', card).forEach((b) => {
-          b.disabled = false;
-          b.classList.remove('correct', 'incorrect');
-        });
-      });
-      $('#quizResult').classList.remove('show');
-      updateScore();
-      UI.scrollToEl('#quiz');
+    // Bound once on the container, not per render — the panel's innerHTML is
+    // replaced on every tab switch, so re-binding here would stack listeners.
+    $('#destPanel').addEventListener('click', (e) => {
+      const t = e.target.closest('[data-wiki]');
+      if (t) UI.openImage(t.dataset.wiki, t.dataset.name || '', '');
     });
 
-    updateScore();
+    selectDestination(list[0].id);
   }
 
-  function renderFooter() {
-    $('#footerDisclaimer').textContent = DATA.meta.disclaimer;
+  function selectDestination(id) {
+    const d = DATA.destinations.find((x) => x.id === id);
+    if (!d) return;
+
+    $$('.dest-tab').forEach((t) => t.classList.toggle('active', t.dataset.dest === id));
+
+    const section = (title, body, cls = '') =>
+      body ? `<div class="dest-block ${cls}"><div class="eyebrow">${esc(title)}</div>${body}</div>` : '';
+
+    /* -- attractions -- */
+    const attractions = d.attractions?.length
+      ? `<div class="dest-attractions">
+          ${d.attractions
+            .map(
+              (a, i) => `
+            <article class="dest-attraction">
+              <button class="dest-att-media" data-wiki="${esc(a.wiki)}" data-name="${esc(a.name)}">
+                ${imgTag(a.wiki, a.name)}
+                <span class="dest-att-n">${a.number || i + 1}</span>
+              </button>
+              <div class="dest-att-copy">
+                <h4 class="dest-att-title">${esc(a.name)}</h4>
+                ${a.italian ? `<div class="dest-att-it">${esc(a.italian)}</div>` : ''}
+                <p>${esc(a.text)}</p>
+                ${
+                  a.subItems
+                    ? `<div class="sub-items">${a.subItems
+                        .map(
+                          (s) => `
+                      <button class="sub-item" data-wiki="${esc(s.wiki)}" data-name="${esc(s.name)}">
+                        ${imgTag(s.wiki, s.name, 400)}
+                        <span><b>${esc(s.name)}</b><small>${esc(s.text)}</small></span>
+                      </button>`
+                        )
+                        .join('')}</div>`
+                    : ''
+                }
+                ${
+                  a.tradition
+                    ? `<div class="tradition"><span>${a.tradition.icon}</span><div><b>${esc(
+                        a.tradition.title
+                      )}</b><p>${rich(a.tradition.text)}</p></div></div>`
+                    : ''
+                }
+                ${
+                  a.why
+                    ? `<ul class="why-list">${a.why.map((w) => `<li>${esc(w)}</li>`).join('')}</ul>`
+                    : ''
+                }
+                ${
+                  a.story
+                    ? `<div class="story-box"><b>${esc(a.story.question)}</b><p>${esc(a.story.text)}</p></div>`
+                    : ''
+                }
+                ${
+                  a.legend
+                    ? `<div class="legend-box">
+                         <div class="legend-head">💛 ${esc(a.legend.title)}</div>
+                         <p>${esc(a.legend.text)}</p>
+                         ${a.legend.note ? `<small>${esc(a.legend.note)}</small>` : ''}
+                       </div>`
+                    : ''
+                }
+              </div>
+            </article>`
+            )
+            .join('')}
+         </div>`
+      : '';
+
+    /* -- travel options -- */
+    const travel = d.travel
+      ? `<div class="dest-block">
+           <div class="eyebrow">${esc(d.travel.title)}</div>
+           ${d.travel.intro ? `<p class="muted">${esc(d.travel.intro)}</p>` : ''}
+           <div class="travel-grid">
+             ${d.travel.options
+               .map(
+                 (o) => `
+               <div class="travel-option${o.best ? ' best' : ''}">
+                 ${o.best ? '<span class="travel-best">fastest</span>' : ''}
+                 <div class="travel-icon">${o.icon}</div>
+                 <b>${esc(o.name)}</b>
+                 <div class="travel-time">${esc(o.time)}</div>
+                 <small>${esc(o.text)}</small>
+               </div>`
+               )
+               .join('')}
+           </div>
+         </div>`
+      : '';
+
+    /* -- suggested order -- */
+    const route = d.route
+      ? `<div class="dest-block">
+           <div class="eyebrow">Suggested order</div>
+           <div class="walk-route">
+             ${d.route
+               .map((node) =>
+                 node.leg
+                   ? `<div class="walk-leg">
+                        <span class="walk-line"></span>
+                        ${node.leg.time ? `<span class="walk-leg-text">${esc(node.leg.time)}</span>` : ''}
+                      </div>`
+                   : `<button class="walk-stop" data-wiki="${esc(node.wiki)}" data-name="${esc(node.name)}">
+                        ${imgTag(node.wiki, node.name, 400)}
+                        <span>${esc(node.name)}</span>
+                      </button>`
+               )
+               .join('')}
+           </div>
+         </div>`
+      : '';
+
+    const stay = d.stay?.length
+      ? `<div class="dest-block"><div class="eyebrow">Where to stay</div>
+           <div class="stay-grid">${renderStayCards(d.stay)}</div></div>`
+      : '';
+
+    const transport = d.transport?.length
+      ? `<div class="dest-block"><div class="eyebrow">${esc(d.transportTitle || 'Transportation')}</div>
+           ${d.transportIntro ? `<p class="muted">${esc(d.transportIntro)}</p>` : ''}
+           <div class="transport-list">${renderTransport(d.transport)}</div></div>`
+      : '';
+
+    const food = d.food
+      ? `<div class="dest-block"><div class="eyebrow">${esc(d.food.intro)}</div>
+           <div class="food-grid">
+             ${d.food.items
+               .map(
+                 (f) => `
+               <button class="food-item" data-wiki="${esc(f.wiki)}" data-name="${esc(f.name)}">
+                 <div class="food-media">${imgTag(f.wiki, f.name, 400)}</div>
+                 <span>${esc(f.name)}</span>
+                 ${f.text ? `<em>${esc(f.text)}</em>` : ''}
+               </button>`
+               )
+               .join('')}
+           </div></div>`
+      : '';
+
+    const experience = d.experience
+      ? `<div class="dest-block experience">
+           <button class="experience-photo" data-wiki="${esc(d.experience.wiki)}" data-name="${esc(d.experience.title)}">
+             ${imgTag(d.experience.wiki, d.experience.title)}
+           </button>
+           <div>
+             <div class="eyebrow">Don't miss</div>
+             <h4>${esc(d.experience.title)}</h4>
+             <p>${esc(d.experience.text)}</p>
+           </div>
+         </div>`
+      : '';
+
+    const sport = d.sport
+      ? `<div class="dest-block experience">
+           <button class="experience-photo" data-wiki="${esc(d.sport.wiki)}" data-name="${esc(d.sport.title)}">
+             ${imgTag(d.sport.wiki, d.sport.title)}
+           </button>
+           <div>
+             <div class="eyebrow">⚽ Sport</div>
+             <h4>${esc(d.sport.title)}</h4>
+             <p>${esc(d.sport.text)}</p>
+           </div>
+         </div>`
+      : '';
+
+    $('#destPanel').innerHTML = `
+      <article class="dest-article">
+        <div class="dest-hero">
+          ${imgTag(d.hero.wiki, d.hero.caption, 1600)}
+          <div class="dest-hero-cap">
+            <div class="dest-hero-meta">${esc(d.region)} · ${esc(d.days)}</div>
+            <h3>${esc(d.city)}</h3>
+          </div>
+        </div>
+
+        <div class="dest-body">
+          <p class="dest-lead">${esc(d.intro)}</p>
+          ${d.whyVisit ? section(d.whyVisit.title, `<p class="why-text">${esc(d.whyVisit.text)}</p>`, 'why') : ''}
+          ${sport}
+          ${travel}
+          ${d.orderTitle ? `<div class="dest-block"><div class="eyebrow">${esc(d.orderTitle)}</div>${
+            d.orderIntro ? `<p class="muted">${esc(d.orderIntro)}</p>` : ''
+          }</div>` : ''}
+          ${attractions}
+          ${d.myth ? `<div class="myth-box"><b>⚠ ${esc(d.myth.title)}</b><p>${rich(d.myth.text)}</p></div>` : ''}
+          ${
+            d.note
+              ? `<div class="unesco-box"><span class="amalfi-badge">🏛 ${esc(d.note.badge)}</span><p>${esc(d.note.text)}</p></div>`
+              : ''
+          }
+          ${route}
+          ${experience}
+          ${stay}
+          <div class="two-up">${transport}${food}</div>
+        </div>
+      </article>`;
+
+    UI.observeReveals($('#destPanel'));
+  }
+
+  /* ======================================================================
+   * 7 · Colophon
+   * =================================================================== */
+
+  function renderColophon() {
+    const a = DATA.author;
+    $('#colophon').innerHTML = `
+      <a class="fingerprint" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">
+        <span class="fp-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M20 5c-8 0-14 6-14 14v6"/>
+            <path d="M20 10c-5 0-9 4-9 9v8"/>
+            <path d="M20 15c-2.5 0-4 2-4 4v10"/>
+            <path d="M20 15c2.5 0 4 2 4 4v6"/>
+            <path d="M20 10c5 0 9 4 9 9v4"/>
+            <path d="M20 5c8 0 14 6 14 14v2"/>
+          </svg>
+        </span>
+        <span class="fp-copy">
+          <small>${esc(a.role)}</small>
+          <b>${esc(a.name)}</b>
+          <em>${esc(a.url.replace(/^https?:\/\//, ''))}</em>
+        </span>
+        <span class="fp-arrow">↗</span>
+      </a>`;
   }
 
   /* ------------------------------------------------------------------ go */

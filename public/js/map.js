@@ -13,6 +13,7 @@ const ItalyMap = (() => {
   let geo = null;
   let onSelect = null;
   let guideNames = new Set();
+  let cityPins = {};
 
   // Rendering state
   let svg, gRoot, layers, projection, path, zoom;
@@ -70,6 +71,7 @@ const ItalyMap = (() => {
   function init(options) {
     onSelect = options.onSelect;
     guideNames = new Set(options.guideRegions || []);
+    cityPins = options.cityPins || {};
 
     const pane = document.querySelector('.map-pane');
     const tooltip = document.getElementById('mapTooltip');
@@ -81,6 +83,7 @@ const ItalyMap = (() => {
       regions: gRoot.append('g'),
       markers: gRoot.append('g'),
       labels: gRoot.append('g'),
+      cities: gRoot.append('g'),
     };
 
     /* -------- zoom -------- */
@@ -94,6 +97,10 @@ const ItalyMap = (() => {
         layers.graticule.selectAll('path').attr('stroke-width', 1 / k);
         layers.markers.selectAll('circle').attr('transform', `scale(${1 / k})`);
         layers.labels.selectAll('text').style('font-size', `${15 / k}px`).style('stroke-width', `${3.5 / k}px`);
+        // City pins keep a constant on-screen size no matter the zoom level.
+        layers.cities.selectAll('g.city').attr('transform', function () {
+          return `translate(${d3.select(this).attr('data-xy')}) scale(${1 / k})`;
+        });
       });
 
     svg.call(zoom).on('click', () => reset());
@@ -157,6 +164,8 @@ const ItalyMap = (() => {
         .attr('x', (d) => path.centroid(d)[0])
         .attr('y', (d) => path.centroid(d)[1] - 10)
         .text((d) => shortName(nameOf(d)));
+
+      drawCities(activeName);
     }
 
     function className(name) {
@@ -165,6 +174,65 @@ const ItalyMap = (() => {
         (guideNames.has(name) ? ' in-guide' : '') +
         (name === activeName ? ' active' : '')
       );
+    }
+
+    /** Label slots, in the pin's own (unscaled) coordinate space. */
+    const LABEL_SLOTS = {
+      above: { x: 0, y: -12, anchor: 'middle' },
+      below: { x: 0, y: 21, anchor: 'middle' },
+      right: { x: 11, y: 5, anchor: 'start' },
+      left: { x: -11, y: 5, anchor: 'end' },
+    };
+    const SLOT_ORDER = ['above', 'below', 'right', 'left'];
+
+    /**
+     * Give each pin the first label slot not already used by a pin close enough
+     * on screen to collide. Positano and Amalfi sit ~12 km apart, so without
+     * this their labels overlap into an unreadable smear.
+     */
+    function placeLabels(pins, k) {
+      const placed = [];
+      pins.forEach((pin) => {
+        const [x, y] = projection(pin.coords);
+        const taken = new Set(
+          placed
+            .filter((p) => Math.abs((p.x - x) * k) < 100 && Math.abs((p.y - y) * k) < 34)
+            .map((p) => p.slot)
+        );
+        placed.push({ pin, x, y, slot: SLOT_ORDER.find((s) => !taken.has(s)) || 'above' });
+      });
+      return placed;
+    }
+
+    /**
+     * Draw the guide's cities for the selected region directly onto the map.
+     * Pins carry their projected position in `data-xy` so the zoom handler can
+     * rescale them to a constant on-screen size without reprojecting.
+     */
+    function drawCities(regionName) {
+      const pins = (regionName && cityPins[regionName]) || [];
+      const k = d3.zoomTransform(svg.node()).k || 1;
+      const placed = placeLabels(pins, k);
+
+      const join = layers.cities.selectAll('g.city').data(placed, (d) => d.pin.name);
+      join.exit().remove();
+
+      const enter = join.enter().append('g').attr('class', 'city');
+      enter.append('circle').attr('class', 'city-halo').attr('r', 9);
+      enter.append('circle').attr('class', 'city-dot').attr('r', 3.4);
+      enter.append('text').attr('class', 'city-name');
+
+      const all = enter.merge(join);
+      all
+        .attr('data-xy', (d) => `${d.x},${d.y}`)
+        .attr('transform', (d) => `translate(${d.x},${d.y}) scale(${1 / k})`);
+
+      all
+        .select('text.city-name')
+        .attr('x', (d) => LABEL_SLOTS[d.slot].x)
+        .attr('y', (d) => LABEL_SLOTS[d.slot].y)
+        .style('text-anchor', (d) => LABEL_SLOTS[d.slot].anchor)
+        .text((d) => d.pin.name);
     }
 
     /* -------- zoom helpers -------- */
@@ -194,6 +262,7 @@ const ItalyMap = (() => {
         .selectAll('text.region-label')
         .classed('visible', (d) => nameOf(d) === name);
 
+      drawCities(name);
       zoomTo(feature);
       document.getElementById('resetBtn').classList.add('visible');
       if (onSelect) onSelect(name);
@@ -203,6 +272,7 @@ const ItalyMap = (() => {
       activeName = null;
       layers.regions.selectAll('path.region').attr('class', (d) => className(nameOf(d)));
       layers.labels.selectAll('text.region-label').classed('visible', false);
+      drawCities(null);
       document.getElementById('resetBtn').classList.remove('visible');
       svg.transition().duration(650).call(zoom.transform, d3.zoomIdentity);
       if (onSelect) onSelect(null);

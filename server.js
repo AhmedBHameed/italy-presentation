@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 });
 
 /* ===========================================================================
- * API — the content of Italy.pdf, as JSON
+ * API — the whole guide, as JSON
  * ======================================================================== */
 
 const api = express.Router();
@@ -34,7 +34,7 @@ const api = express.Router();
 api.get("/", (_req, res) => {
   res.json({
     name: "Discover Italy API",
-    source: content.meta.sourceDocument,
+    subtitle: content.meta.subtitle,
     endpoints: [
       "/api/content",
       "/api/overview",
@@ -44,7 +44,8 @@ api.get("/", (_req, res) => {
       "/api/rome",
       "/api/rome/attractions/:id",
       "/api/vatican",
-      "/api/quiz",
+      "/api/destinations",
+      "/api/destinations/:id",
       "/api/image/:title",
       "/healthz",
     ],
@@ -60,14 +61,24 @@ api.get("/content", (_req, res) => {
 api.get("/overview", (_req, res) => res.json(content.overview));
 api.get("/planning", (_req, res) => res.json(content.planning));
 api.get("/vatican", (_req, res) => res.json(content.vatican));
-api.get("/quiz", (_req, res) => res.json(content.quiz));
 
-/** The 20 map regions, merged with the PDF's five region → city entries. */
+api.get("/destinations", (_req, res) =>
+  res.json({ count: content.destinations.length, destinations: content.destinations })
+);
+
+api.get("/destinations/:id", (req, res) => {
+  const hit = content.destinations.find((d) => d.id === req.params.id);
+  if (!hit) return res.status(404).json({ error: "Destination not found", id: req.params.id });
+  res.json(hit);
+});
+
+/** The 20 map regions, merged with the five region → city entries in the guide. */
 api.get("/regions", (_req, res) => {
   const regions = Object.entries(content.regionInfo).map(([name, info]) => ({
     name,
     ...info,
     guide: content.guideRegions[name] || null,
+    pins: content.cityPins[name] || null,
     inGuide: Boolean(content.guideRegions[name]),
   }));
   res.json({ count: regions.length, regions });
@@ -395,7 +406,7 @@ app.use((err, _req, res, _next) => {
 const server = app.listen(PORT, HOST, () => {
   console.log(`\n  🇮🇹  Discover Italy — running on http://localhost:${PORT}`);
   console.log(
-    `      source document: ${content.meta.sourceDocument} (${content.meta.pages} pages)`,
+    `      ${content.meta.subtitle} · ${content.meta.chapters} chapters`,
   );
   console.log(`      api:             http://localhost:${PORT}/api\n`);
 
