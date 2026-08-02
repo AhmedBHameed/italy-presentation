@@ -1,357 +1,559 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Discover Italy — A First-Time Travel Guide</title>
-<meta name="description" content="An interactive guide to a first trip to Italy: a clickable map of all 20 regions, when to go, what it costs, and the route through Rome, Florence, Pisa, Venice, Milan and the Amalfi Coast.">
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discover Italy — A First-Time Travel Guide</title>
+    <meta
+      name="description"
+      content="An interactive guide to a first trip to Italy, read from beginning to end: a clickable map of all 20 regions, when to go, what it costs, and the route through Rome, the Vatican, Florence, Pisa, Venice, Milan and the Amalfi Coast."
+    />
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/styles.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='33' height='100' fill='%23008C45'/><rect x='33' width='34' height='100' fill='%23F4F5F0'/><rect x='67' width='33' height='100' fill='%23CD212A'/></svg>">
-</head>
-<body>
+    <!-- Typefaces are served from this repo (npm run fonts), never from a CDN. -->
+    <link rel="stylesheet" href="/fonts/fonts.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='33' height='100' fill='%23008C45'/><rect x='33' width='34' height='100' fill='%23F4F5F0'/><rect x='67' width='33' height='100' fill='%23CD212A'/></svg>"
+    />
 
-<!-- ══════════════════════════ Loading veil ══════════════════════════ -->
-<div class="boot" id="boot">
-  <div class="boot-mark">
-    <span class="boot-flag"></span>
-    <span>Discover Italy</span>
-  </div>
-  <div class="boot-bar"><i></i></div>
-  <div class="boot-note" id="bootNote">packing the guide…</div>
-</div>
-
-<!-- ══════════════════════════ Navigation ══════════════════════════ -->
-<div class="scroll-progress" id="scrollProgress"></div>
-<header class="nav" id="nav">
-  <a class="nav-brand" href="#hero">
-    <span class="nav-flag"></span>
-    <span>Discover&nbsp;<em>Italy</em></span>
-  </a>
-  <nav class="nav-links" id="navLinks">
-    <a href="#regions">Regions</a>
-    <a href="#planning">Planning</a>
-    <a href="#rome">Rome</a>
-    <a href="#vatican">Vatican</a>
-    <a href="#destinations">The route</a>
-  </nav>
-  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-</header>
-
-<main>
-
-<!-- ══════════════════════════ 1. Hero ══════════════════════════ -->
-<section class="hero" id="hero">
-  <svg class="hero-silhouette" id="heroSilhouette" aria-hidden="true"></svg>
-  <div class="hero-glow"></div>
-
-  <div class="hero-inner">
-    <div class="eyebrow reveal">Southern Europe · <span id="heroKicker">A first-time travel guide</span></div>
-    <h1 class="hero-title reveal">Italy</h1>
-    <p class="hero-lede reveal" id="heroLede"></p>
-    <div class="hero-actions reveal">
-      <a class="btn btn-primary" href="#regions">Explore the map</a>
-      <a class="btn btn-ghost" href="#planning">Plan the trip</a>
-    </div>
-    <div class="figure-row reveal" id="heroFigures"></div>
-  </div>
-
-  <a class="scroll-cue" href="#story" aria-label="Scroll down">
-    <span></span>
-  </a>
-</section>
-
-<!-- ══════════════════════════ 2. Story ══════════════════════════ -->
-<section class="section story" id="story">
-  <div class="wrap wrap-narrow">
-    <div class="section-head reveal">
-      <div class="eyebrow">Chapter 01</div>
-      <h2>A country of twenty stories</h2>
-    </div>
-    <div class="prose reveal" id="storyProse"></div>
-    <div class="landmark-chips reveal" id="landmarkChips"></div>
-  </div>
-</section>
-
-<!-- ══════════════════════════ 3. Regions map ══════════════════════════ -->
-<section class="section section-map" id="regions">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Chapter 02 · click anywhere on the map</div>
-      <h2>Twenty regions, five on the route</h2>
-      <p class="section-sub">
-        Italy has 20 regions, and each has its own traditions, food, and attractions. This guide routes
-        through five of them — they glow gold. Click a region to open it; the cities appear on the map.
-      </p>
-    </div>
-  </div>
-
-  <div class="atlas reveal">
-    <div class="map-pane">
-      <svg id="map" role="img" aria-label="Clickable map of the regions of Italy"></svg>
-      <div class="map-legend">
-        <span><i class="swatch swatch-guide"></i> on the route</span>
-        <span><i class="swatch swatch-plain"></i> other regions</span>
+    <!-- Theme is applied before first paint, so a light-theme reader never sees a dark flash. -->
+    <script>
+      (() => {
+        const saved = localStorage.getItem("italy-theme");
+        const system = window.matchMedia("(prefers-color-scheme: light)")
+          .matches
+          ? "light"
+          : "dark";
+        document.documentElement.dataset.theme = saved || system;
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- ══════════════════════════ Loading veil ══════════════════════════ -->
+    <div class="boot" id="boot">
+      <div class="boot-mark">
+        <span class="boot-flag"></span>
+        <span>Discover Italy</span>
       </div>
-      <button class="reset-btn" id="resetBtn">↺ Reset view</button>
-      <svg class="compass" viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="50" cy="50" r="46" fill="none" stroke="#EDE3CF" stroke-width="1" opacity="0.4"/>
-        <line x1="50" y1="6" x2="50" y2="94" stroke="#EDE3CF" stroke-width="1" opacity="0.35"/>
-        <line x1="6" y1="50" x2="94" y2="50" stroke="#EDE3CF" stroke-width="1" opacity="0.35"/>
-        <polygon points="50,10 44,50 56,50" fill="#C9A227"/>
-        <text x="50" y="26" fill="#EDE3CF" font-size="11" font-family="JetBrains Mono, monospace" text-anchor="middle" opacity="0.7">N</text>
-      </svg>
-      <div class="map-tooltip" id="mapTooltip"></div>
+      <div class="boot-bar"><i></i></div>
+      <div class="boot-note" id="bootNote">packing the guide…</div>
     </div>
 
-    <aside class="info-pane">
-      <div class="info-empty" id="infoEmpty">
-        <div class="eyebrow">The route</div>
-        <h3>Pick a region</h3>
-        <p>Click any region on the map to open it. The five on the route carry the cities in this guide.</p>
-        <div class="guide-shortcuts" id="guideShortcuts"></div>
+    <!-- ══════════════════════════ Chrome ══════════════════════════ -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <header class="topbar" id="topbar">
+      <div class="topbar-brand">
+        <span class="nav-flag"></span>
+        <span>Discover&nbsp;<em>Italy</em></span>
       </div>
-      <div class="dossier" id="dossier"></div>
-    </aside>
-  </div>
 
-  <div class="wrap">
-    <div class="amalfi-note reveal" id="amalfiNote"></div>
-  </div>
-</section>
+      <!-- Reading position, not a menu: the guide is meant to be read in order. -->
+      <div class="topbar-where" id="topbarWhere" aria-live="polite">
+        <span class="where-n" id="whereN">00</span>
+        <span class="where-title" id="whereTitle">Italy</span>
+      </div>
 
-<!-- ══════════════════════════ 4. Planning ══════════════════════════ -->
-<section class="section" id="planning">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Chapter 03 · planning</div>
-      <h2 id="planningHeadline">How to plan a first-time trip to Italy</h2>
-      <p class="section-sub" id="planningLede"></p>
-    </div>
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-label="Switch between light and dark theme"
+      >
+        <span class="theme-track">
+          <span class="theme-knob">
+            <svg
+              class="theme-icon icon-sun"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4.6" />
+              <g stroke-linecap="round">
+                <path
+                  d="M12 2.2v2.4M12 19.4v2.4M2.2 12h2.4M19.4 12h2.4M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7"
+                />
+              </g>
+            </svg>
+            <svg
+              class="theme-icon icon-moon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.4 8.4 0 1 0 10.2 10.2Z" />
+            </svg>
+          </span>
+        </span>
+      </button>
+    </header>
 
-    <div class="panel core-panel reveal">
-      <p class="core-body" id="planningBody"></p>
-      <div class="core-grid" id="corePoints"></div>
-    </div>
+    <main>
+      <!-- ══════════════════════════ Cover ══════════════════════════ -->
+      <section class="cover" id="cover">
+        <!-- The country, filled with its own flag — the cover of the source document. -->
+        <svg class="cover-map" id="coverMap" aria-hidden="true"></svg>
+        <div class="cover-glow"></div>
 
-    <div class="section-head reveal" style="margin-top:56px">
-      <div class="eyebrow">The four decisions</div>
-      <h3 id="planningQuestion"></h3>
-      <p class="section-sub" id="planningAnswer"></p>
-    </div>
-    <div class="decision-grid reveal" id="decisionGrid"></div>
-
-    <div class="panel season-panel reveal">
-      <div class="panel-head">
-        <div>
-          <div class="eyebrow">Decision 01</div>
-          <h3 id="seasonQuestion"></h3>
-          <p class="muted" id="seasonIntro"></p>
+        <div class="cover-inner">
+          <div class="eyebrow reveal">
+            Southern Europe ·
+            <span id="coverKicker">a first-time travel guide</span>
+          </div>
+          <h1 class="cover-title reveal">Italy</h1>
+          <p class="cover-lede reveal" id="coverLede"></p>
+          <div class="cover-actions reveal">
+            <button class="btn btn-primary" id="beginBtn" type="button">
+              Begin the guide
+            </button>
+            <span class="cover-hint">nine chapters, read top to bottom</span>
+          </div>
+          <div class="figure-row reveal" id="coverFigures"></div>
         </div>
-      </div>
 
-      <div class="season-tabs" id="seasonTabs" role="tablist"></div>
-      <div class="month-strip" id="monthStrip" aria-hidden="true"></div>
-      <div class="season-detail" id="seasonDetail"></div>
-    </div>
+        <button
+          class="scroll-cue"
+          id="scrollCue"
+          type="button"
+          aria-label="Start reading"
+        >
+          <span></span>
+        </button>
+      </section>
 
-    <div class="panel reveal">
-      <div class="panel-head">
-        <div>
-          <div class="eyebrow">Decision 02</div>
-          <h3 id="durationQuestion"></h3>
-          <p class="muted" id="durationAnswer"></p>
+      <!-- ══════════════════════════ 01 · The country & its regions ══════════════════════════ -->
+      <section class="chapter" id="atlas">
+        <div class="wrap">
+          <div class="chapter-head reveal" data-head="atlas"></div>
+          <div class="prose reveal" id="storyProse"></div>
+          <div class="landmark-chips reveal" id="landmarkChips"></div>
         </div>
-        <div class="pill-toggle" id="durationToggle"></div>
-      </div>
-      <div class="duration-detail" id="durationDetail"></div>
-    </div>
 
-    <div class="two-up reveal">
-      <div class="panel cost-panel" id="costPanel"></div>
-      <div class="panel booking-panel" id="bookingPanel"></div>
-    </div>
-  </div>
-</section>
+        <div class="atlas reveal">
+          <div class="map-pane">
+            <svg
+              id="map"
+              role="img"
+              aria-label="Clickable map of the regions of Italy"
+            ></svg>
+            <div class="map-legend">
+              <span><i class="swatch swatch-guide"></i> on the route</span>
+              <span><i class="swatch swatch-plain"></i> other regions</span>
+            </div>
+            <button class="reset-btn" id="resetBtn" type="button">
+              ↺ Reset view
+            </button>
+            <svg class="compass" viewBox="0 0 100 100" aria-hidden="true">
+              <circle
+                cx="50"
+                cy="50"
+                r="46"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1"
+                opacity="0.35"
+              />
+              <line
+                x1="50"
+                y1="6"
+                x2="50"
+                y2="94"
+                stroke="currentColor"
+                stroke-width="1"
+                opacity="0.3"
+              />
+              <line
+                x1="6"
+                y1="50"
+                x2="94"
+                y2="50"
+                stroke="currentColor"
+                stroke-width="1"
+                opacity="0.3"
+              />
+              <polygon points="50,10 44,50 56,50" fill="var(--gold)" />
+              <text
+                x="50"
+                y="26"
+                fill="currentColor"
+                font-size="11"
+                font-family="JetBrains Mono, monospace"
+                text-anchor="middle"
+                opacity="0.7"
+              >
+                N
+              </text>
+            </svg>
+            <div class="map-tooltip" id="mapTooltip"></div>
+          </div>
 
-<!-- ══════════════════════════ 5. Rome ══════════════════════════ -->
-<section class="section section-rome" id="rome">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Chapter 04 · <span id="romeRegion"></span> · <span id="romeDays"></span></div>
-      <h2 id="romeTitle">Rome, Italy</h2>
-      <p class="section-sub" id="romeIntro"></p>
-    </div>
-
-    <div class="attraction-grid" id="attractionGrid"></div>
-    <p class="hint reveal">Click any card to open it.</p>
-
-    <!-- Walking route -->
-    <div class="panel reveal" style="margin-top:56px">
-      <div class="panel-head">
-        <div>
-          <div class="eyebrow">On foot</div>
-          <h3 id="walkTitle"></h3>
-          <p class="muted" id="walkIntro"></p>
+          <aside class="info-pane">
+            <div class="info-empty" id="infoEmpty">
+              <div class="eyebrow">The route</div>
+              <h3>Pick a region</h3>
+              <p>
+                Click any region on the map to open it. The five on the route
+                carry the cities in this guide, in the order you will read them.
+              </p>
+              <div class="guide-shortcuts" id="guideShortcuts"></div>
+            </div>
+            <div class="dossier" id="dossier"></div>
+          </aside>
         </div>
-        <div class="walk-total" id="walkTotal"></div>
+
+        <div class="wrap">
+          <div class="amalfi-note reveal" id="amalfiNote"></div>
+        </div>
+
+        <div class="wrap">
+          <div class="chapter-turn reveal" data-turn="atlas"></div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════ 02 · Planning ══════════════════════════ -->
+      <section class="chapter" id="planning">
+        <div class="wrap">
+          <div class="chapter-head reveal" data-head="planning"></div>
+
+          <div class="panel core-panel reveal">
+            <p class="core-body" id="planningBody"></p>
+            <div class="core-grid" id="corePoints"></div>
+          </div>
+
+          <div class="mini-head reveal">
+            <div class="eyebrow">The four decisions</div>
+            <h3 id="planningQuestion"></h3>
+            <p class="section-sub" id="planningAnswer"></p>
+          </div>
+          <div class="decision-grid reveal" id="decisionGrid"></div>
+
+          <div class="panel season-panel reveal">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">Decision 01</div>
+                <h3 id="seasonQuestion"></h3>
+                <p class="muted" id="seasonIntro"></p>
+              </div>
+            </div>
+            <div class="season-tabs" id="seasonTabs" role="tablist"></div>
+            <div class="month-strip" id="monthStrip" aria-hidden="true"></div>
+            <div class="season-detail" id="seasonDetail"></div>
+          </div>
+
+          <div class="panel reveal">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">Decision 02</div>
+                <h3 id="durationQuestion"></h3>
+                <p class="muted" id="durationAnswer"></p>
+              </div>
+              <div class="pill-toggle" id="durationToggle"></div>
+            </div>
+            <div class="duration-detail" id="durationDetail"></div>
+          </div>
+
+          <div class="two-up reveal">
+            <div class="panel cost-panel" id="costPanel"></div>
+            <div class="panel booking-panel" id="bookingPanel"></div>
+          </div>
+
+          <div class="chapter-turn reveal" data-turn="planning"></div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════ 03 · Rome ══════════════════════════ -->
+      <section class="chapter" id="rome">
+        <div class="wrap">
+          <div class="chapter-head reveal" data-head="rome"></div>
+          <p class="chapter-lead reveal" id="romeIntro"></p>
+
+          <div class="mini-head reveal">
+            <div class="eyebrow">Famous tourist attractions</div>
+            <h3>Five landmarks, in the order the guide takes them</h3>
+          </div>
+          <div class="attraction-grid" id="attractionGrid"></div>
+          <p class="hint reveal">Click any card to open it.</p>
+
+          <div class="chapter-turn reveal" data-turn="rome"></div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════ 04 · Vatican City ══════════════════════════ -->
+      <section class="chapter" id="vatican">
+        <div class="wrap">
+          <div class="chapter-head reveal" data-head="vatican"></div>
+          <p class="chapter-lead reveal" id="vaticanIntro"></p>
+
+          <div class="vatican-stage reveal">
+            <div class="plan-wrap">
+              <!-- Hand-drawn schematic plan of Vatican City. Hotspots are injected by JS. -->
+              <svg
+                class="plan"
+                id="vaticanPlan"
+                viewBox="0 0 100 72"
+                role="img"
+                aria-label="Interactive plan of Vatican City"
+              >
+                <defs>
+                  <linearGradient id="planGarden" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="var(--plan-garden-1)" />
+                    <stop offset="1" stop-color="var(--plan-garden-2)" />
+                  </linearGradient>
+                  <linearGradient id="planStone" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="var(--plan-stone-1)" />
+                    <stop offset="1" stop-color="var(--plan-stone-2)" />
+                  </linearGradient>
+                  <pattern
+                    id="planHatch"
+                    width="3"
+                    height="3"
+                    patternTransform="rotate(45)"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <line
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="3"
+                      stroke="var(--gold)"
+                      stroke-width="0.5"
+                      opacity="0.25"
+                    />
+                  </pattern>
+                </defs>
+
+                <rect
+                  x="0"
+                  y="0"
+                  width="100"
+                  height="72"
+                  fill="var(--plan-bg)"
+                />
+                <rect
+                  x="0"
+                  y="0"
+                  width="100"
+                  height="72"
+                  fill="url(#planHatch)"
+                />
+
+                <!-- The border. Every building below is drawn to sit inside it. -->
+                <path
+                  class="plan-territory"
+                  d="M10 40 L14 25 L26 13 L44 7 L62 6 L74 10 L79 20 L80 30 L91 36 L92 52 L88 63 L64 68 L36 68 L16 55 Z"
+                  fill="url(#planGarden)"
+                  stroke="var(--gold)"
+                  stroke-width="0.6"
+                  stroke-dasharray="2 1.2"
+                />
+
+                <!-- More than half the country is garden. -->
+                <g opacity="0.5" fill="var(--plan-tree)">
+                  <circle cx="20" cy="35" r="3" />
+                  <circle cx="29" cy="44" r="2.4" />
+                  <circle cx="15" cy="42" r="2" />
+                  <circle cx="26" cy="30" r="2.6" />
+                  <circle cx="33" cy="50" r="2.2" />
+                  <circle cx="18" cy="29" r="2" />
+                  <circle cx="31" cy="20" r="2.4" />
+                  <circle cx="39" cy="14" r="2" />
+                  <circle cx="23" cy="21" r="1.8" />
+                  <circle cx="34" cy="36" r="2.2" />
+                  <circle cx="24" cy="52" r="2" />
+                  <circle cx="31" cy="58" r="1.8" />
+                </g>
+
+                <!-- Vatican Museums: the long galleries along the northern wall. -->
+                <path
+                  class="plan-building"
+                  d="M45 12 H68 V25 H57 V20 H45 Z"
+                  fill="url(#planStone)"
+                />
+                <!-- Apostolic Palace -->
+                <rect
+                  class="plan-building"
+                  x="48"
+                  y="31"
+                  width="14"
+                  height="13"
+                  rx="0.6"
+                  fill="url(#planStone)"
+                />
+                <!-- Sistine Chapel, tucked against the palace -->
+                <rect
+                  class="plan-building"
+                  x="40"
+                  y="32"
+                  width="7"
+                  height="8"
+                  rx="0.5"
+                  fill="var(--gold)"
+                  opacity="0.9"
+                />
+                <!-- St. Peter's Basilica: a Latin cross with the dome over the crossing,
+               its nave running east towards the square. -->
+                <path
+                  class="plan-building"
+                  d="M40 47.5 H58 V54.5 H40 Z"
+                  fill="var(--terracotta)"
+                />
+                <path
+                  class="plan-building"
+                  d="M45 43 H52 V59 H45 Z"
+                  fill="var(--terracotta)"
+                />
+                <circle
+                  class="plan-building"
+                  cx="48.5"
+                  cy="51"
+                  r="5.5"
+                  fill="var(--plan-dome)"
+                />
+                <!-- St. Peter's Square, colonnade and obelisk -->
+                <ellipse
+                  class="plan-building"
+                  cx="74"
+                  cy="50"
+                  rx="11"
+                  ry="8.6"
+                  fill="var(--plan-square-1)"
+                />
+                <ellipse
+                  cx="74"
+                  cy="50"
+                  rx="8.4"
+                  ry="6.3"
+                  fill="var(--plan-square-2)"
+                />
+                <rect
+                  x="73.5"
+                  y="46.6"
+                  width="1"
+                  height="6.8"
+                  fill="var(--terracotta)"
+                />
+                <circle cx="74" cy="50" r="1" fill="var(--terracotta)" />
+
+                <g id="planHotspots"></g>
+              </svg>
+              <div class="plan-caption">
+                Schematic plan — not to scale. Click a marker.
+              </div>
+            </div>
+
+            <aside class="plan-info" id="planInfo"></aside>
+          </div>
+
+          <div class="panel ceiling-panel reveal" id="ceilingPanel"></div>
+
+          <div class="masterpieces reveal">
+            <div class="eyebrow">Masterpieces</div>
+            <div class="masterpiece-row" id="masterpieceRow"></div>
+          </div>
+
+          <div class="chapter-turn reveal" data-turn="vatican"></div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════ 05 · Rome on foot ══════════════════════════ -->
+      <section class="chapter" id="rome-on-foot">
+        <div class="wrap">
+          <div class="chapter-head reveal" data-head="rome-on-foot"></div>
+
+          <div class="panel reveal">
+            <div class="panel-head">
+              <div>
+                <div class="eyebrow">On foot</div>
+                <h3 id="walkTitle"></h3>
+                <p class="muted" id="walkIntro"></p>
+              </div>
+              <div class="walk-total" id="walkTotal"></div>
+            </div>
+            <div class="walk-route" id="walkRoute"></div>
+          </div>
+
+          <div class="reveal block">
+            <div class="eyebrow" id="stayTitle"></div>
+            <div class="stay-grid" id="stayGrid"></div>
+          </div>
+
+          <div class="two-up reveal block">
+            <div class="panel">
+              <div class="eyebrow" id="transportTitle"></div>
+              <p class="muted" id="transportIntro"></p>
+              <div class="transport-list" id="transportList"></div>
+            </div>
+            <div class="panel">
+              <div class="eyebrow" id="foodTitle"></div>
+              <p class="muted" id="foodIntro"></p>
+              <div class="food-grid" id="foodGrid"></div>
+            </div>
+          </div>
+
+          <div class="chapter-turn reveal" data-turn="rome-on-foot"></div>
+        </div>
+      </section>
+
+      <!-- ══════════════════ 06–09 · the four stops after Rome ══════════════════ -->
+      <!-- One <section class="chapter"> per destination, appended here by app.js. -->
+      <div id="destinationChapters"></div>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">
+        <div class="footer-grid">
+          <div>
+            <div class="topbar-brand">
+              <span class="nav-flag"></span
+              ><span>Discover&nbsp;<em>Italy</em></span>
+            </div>
+            <p class="muted">
+              An interactive guide to a first trip to Italy — twenty regions,
+              five on the route, and everything you need to decide when to go,
+              how long to stay, and what it costs.
+            </p>
+          </div>
+          <div>
+            <h4>The nine chapters</h4>
+            <ol class="footer-chapters" id="footerChapters"></ol>
+          </div>
+          <div>
+            <h4>Under the hood</h4>
+            <a href="/api" target="_blank" rel="noopener">JSON API</a>
+            <a href="/api/content" target="_blank" rel="noopener"
+              >Full content payload</a
+            >
+            <a href="/healthz" target="_blank" rel="noopener">Health check</a>
+            <p class="muted footer-credit">
+              Photographs from Wikimedia Commons, stored locally so the guide
+              works with no network at all.
+            </p>
+          </div>
+        </div>
+
+        <!-- ── Fingerprint ── -->
+        <div class="colophon" id="colophon"></div>
       </div>
-      <div class="walk-route" id="walkRoute"></div>
-    </div>
+    </footer>
 
-    <!-- Where to stay -->
-    <div class="reveal" style="margin-top:44px">
-      <div class="eyebrow" id="stayTitle"></div>
-      <div class="stay-grid" id="stayGrid"></div>
-    </div>
-
-    <!-- Transport + food -->
-    <div class="two-up reveal" style="margin-top:44px">
-      <div class="panel">
-        <div class="eyebrow" id="transportTitle"></div>
-        <p class="muted" id="transportIntro"></p>
-        <div class="transport-list" id="transportList"></div>
-      </div>
-      <div class="panel">
-        <div class="eyebrow" id="foodTitle"></div>
-        <p class="muted" id="foodIntro"></p>
-        <div class="food-grid" id="foodGrid"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════ 6. Vatican ══════════════════════════ -->
-<section class="section section-vatican" id="vatican">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Chapter 05 · the smallest country in the world</div>
-      <h2 id="vaticanTitle">Inside Vatican City</h2>
-      <p class="section-sub" id="vaticanIntro"></p>
-    </div>
-
-    <div class="vatican-stage reveal">
-      <div class="plan-wrap">
-        <!-- Hand-drawn schematic plan of Vatican City. Hotspots are injected by JS. -->
-        <svg class="plan" id="vaticanPlan" viewBox="0 0 100 72" role="img" aria-label="Interactive plan of Vatican City">
-          <defs>
-            <linearGradient id="planGarden" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#4C6B52"/><stop offset="1" stop-color="#38513E"/>
-            </linearGradient>
-            <linearGradient id="planStone" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#D8C89E"/><stop offset="1" stop-color="#BFAE86"/>
-            </linearGradient>
-            <pattern id="planHatch" width="3" height="3" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-              <line x1="0" y1="0" x2="0" y2="3" stroke="#C9A227" stroke-width="0.5" opacity="0.25"/>
-            </pattern>
-          </defs>
-
-          <rect x="0" y="0" width="100" height="72" fill="#141E33"/>
-          <rect x="0" y="0" width="100" height="72" fill="url(#planHatch)"/>
-
-          <path class="plan-territory"
-                d="M14 46 L16 30 L24 17 L38 9 L58 6 L70 9 L76 16 L78 26 L86 30 L88 40 L86 52 L74 62 L58 66 L40 64 L24 58 Z"
-                fill="url(#planGarden)" stroke="#C9A227" stroke-width="0.6" stroke-dasharray="2 1.2"/>
-
-          <g opacity="0.5" fill="#6F8F72">
-            <circle cx="24" cy="40" r="3"/><circle cx="31" cy="47" r="2.4"/><circle cx="20" cy="49" r="2"/>
-            <circle cx="30" cy="33" r="2.6"/><circle cx="38" cy="50" r="2.2"/><circle cx="22" cy="32" r="2"/>
-            <circle cx="35" cy="24" r="2.4"/><circle cx="43" cy="17" r="2"/><circle cx="27" cy="24" r="1.8"/>
-          </g>
-
-          <path class="plan-building" d="M50 12 L72 10 L74 22 L66 30 L52 28 Z" fill="url(#planStone)"/>
-          <path class="plan-building" d="M52 33 L68 32 L69 46 L54 47 Z" fill="url(#planStone)"/>
-          <rect class="plan-building" x="42" y="34" width="9" height="9" rx="0.6" fill="#C9A227" opacity="0.9"/>
-          <path class="plan-building" d="M40 50 L52 50 L52 60 L40 60 Z" fill="#B5502A"/>
-          <circle class="plan-building" cx="52" cy="55" r="7.5" fill="#C05B33"/>
-          <ellipse class="plan-building" cx="74" cy="53" rx="13" ry="10.5" fill="#E4D6AE"/>
-          <ellipse cx="74" cy="53" rx="10" ry="7.8" fill="#F0E5C6"/>
-          <rect x="73.4" y="49" width="1.2" height="8" fill="#B5502A"/>
-          <circle cx="74" cy="53" r="1.1" fill="#B5502A"/>
-
-          <g id="planHotspots"></g>
-        </svg>
-        <div class="plan-caption">Schematic plan — not to scale. Click a marker.</div>
-      </div>
-
-      <aside class="plan-info" id="planInfo"></aside>
-    </div>
-
-    <!-- The Sistine ceiling -->
-    <div class="panel ceiling-panel reveal" id="ceilingPanel"></div>
-
-    <div class="masterpieces reveal">
-      <div class="eyebrow">Masterpieces</div>
-      <div class="masterpiece-row" id="masterpieceRow"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════ 7. The rest of the route ══════════════════════════ -->
-<section class="section section-dest" id="destinations">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow">Chapter 06 · after Rome</div>
-      <h2>The rest of the route</h2>
-      <p class="section-sub">
-        Four more stops, in the order the guide travels them. Pick one to open its full page —
-        attractions, transport, where to stay, and what to eat.
-      </p>
-    </div>
-
-    <div class="dest-tabs reveal" id="destTabs" role="tablist"></div>
-    <div class="dest-panel" id="destPanel"></div>
-  </div>
-</section>
-
-</main>
-
-<footer class="footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <div class="nav-brand"><span class="nav-flag"></span><span>Discover&nbsp;<em>Italy</em></span></div>
-        <p class="muted">An interactive guide to a first trip to Italy — twenty regions, five on the route,
-          and everything you need to decide when to go, how long to stay, and what it costs.</p>
-      </div>
-      <div>
-        <h4>Chapters</h4>
-        <a href="#story">A country of twenty stories</a>
-        <a href="#regions">The regions map</a>
-        <a href="#planning">Planning a trip</a>
-        <a href="#rome">Rome</a>
-        <a href="#vatican">Vatican City</a>
-        <a href="#destinations">The rest of the route</a>
-      </div>
-      <div>
-        <h4>Under the hood</h4>
-        <a href="/api" target="_blank" rel="noopener">JSON API</a>
-        <a href="/api/content" target="_blank" rel="noopener">Full content payload</a>
-        <a href="/healthz" target="_blank" rel="noopener">Health check</a>
+    <!-- ══════════════════════════ Lightbox ══════════════════════════ -->
+    <div
+      class="modal"
+      id="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+    >
+      <div class="modal-backdrop" data-close></div>
+      <div class="modal-panel" id="modalPanel" tabindex="-1">
+        <button class="modal-close" data-close aria-label="Close">✕</button>
+        <div class="modal-body" id="modalBody"></div>
       </div>
     </div>
 
-    <!-- ── Fingerprint ── -->
-    <div class="colophon" id="colophon"></div>
-  </div>
-</footer>
-
-<!-- ══════════════════════════ Lightbox ══════════════════════════ -->
-<div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
-  <div class="modal-backdrop" data-close></div>
-  <div class="modal-panel" id="modalPanel" tabindex="-1">
-    <button class="modal-close" data-close aria-label="Close">✕</button>
-    <div class="modal-body" id="modalBody"></div>
-  </div>
-</div>
-
-<script src="/vendor/d3.min.js"></script>
-<script src="/vendor/topojson-client.min.js"></script>
-<script src="/js/ui.js"></script>
-<script src="/js/map.js"></script>
-<script src="/js/app.js"></script>
-</body>
+    <script src="/vendor/d3.min.js"></script>
+    <script src="/vendor/topojson-client.min.js"></script>
+    <script src="/js/ui.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
 </html>

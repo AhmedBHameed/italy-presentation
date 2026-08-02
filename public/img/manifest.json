@@ -1,0 +1,474 @@
+{
+  "Amalfi@400": {
+    "file": "amalfi-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Amalfi_sea_view_Italy.JPG/500px-Amalfi_sea_view_Italy.JPG"
+  },
+  "Amalfi_Coast@400": {
+    "file": "amalfi-coast-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Amalfi_Coast_%28Italy%2C_October_2020%29_-_75_%2850558355441%29.jpg/500px-Amalfi_Coast_%28Italy%2C_October_2020%29_-_75_%2850558355441%29.jpg"
+  },
+  "Apostolic_Palace@400": {
+    "file": "apostolic-palace-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Saint_Peter%27s_Square_-_Vatican_City_-_DSC00638.jpg/500px-Saint_Peter%27s_Square_-_Vatican_City_-_DSC00638.jpg"
+  },
+  "Bistecca_alla_fiorentina@400": {
+    "file": "bistecca-alla-fiorentina-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Bistecca_alla_fiorentina-01.jpg/500px-Bistecca_alla_fiorentina-01.jpg"
+  },
+  "Bramante_Staircase@400": {
+    "file": "bramante-staircase-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Vatican_Museums_Spiral_Staircase_Looking_Up_2012.jpg/500px-Vatican_Museums_Spiral_Staircase_Looking_Up_2012.jpg"
+  },
+  "Bridge_of_Sighs@400": {
+    "file": "bridge-of-sighs-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Antonio_Contin_-_Ponte_dei_sospiri_%28Venice%29.jpg/500px-Antonio_Contin_-_Ponte_dei_sospiri_%28Venice%29.jpg"
+  },
+  "St._Peter's_Basilica@400": {
+    "file": "st-peter-s-basilica-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Basilica_di_San_Pietro_in_Vaticano_September_2015-1a.jpg/500px-Basilica_di_San_Pietro_in_Vaticano_September_2015-1a.jpg"
+  },
+  "Venice@1200": {
+    "file": "venice-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Venezia_aerial_view.jpg/1280px-Venezia_aerial_view.jpg"
+  },
+  "Cacio_e_pepe@400": {
+    "file": "cacio-e-pepe-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Cacio_e_pepe.jpg/500px-Cacio_e_pepe.jpg"
+  },
+  "Carbonara@400": {
+    "file": "carbonara-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Espaguetis_carbonara.jpg/500px-Espaguetis_carbonara.jpg"
+  },
+  "Colosseum@400": {
+    "file": "colosseum-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/500px-Colosseo_2020.jpg"
+  },
+  "Doge's_Palace@400": {
+    "file": "doge-s-palace-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/%28Venice%29_Doge%27s_Palace_and_campanile_of_St._Mark%27s_Basilica_facing_the_sea.jpg/500px-%28Venice%29_Doge%27s_Palace_and_campanile_of_St._Mark%27s_Basilica_facing_the_sea.jpg"
+  },
+  "Espresso@400": {
+    "file": "espresso-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Tazzina_di_caff%C3%A8_a_Ventimiglia.jpg/500px-Tazzina_di_caff%C3%A8_a_Ventimiglia.jpg"
+  },
+  "Florence@400": {
+    "file": "florence-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Firenze_-_Piazzale_Michelangelo%2C_Firenze%2C_Italy_-_April_6%2C_2015_02.jpg/500px-Firenze_-_Piazzale_Michelangelo%2C_Firenze%2C_Italy_-_April_6%2C_2015_02.jpg"
+  },
+  "Florence_Cathedral@400": {
+    "file": "florence-cathedral-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Cattedrale_di_Santa_Maria_del_Fiore_%E2%80%93_Il_Duomo_di_Firenze.jpg/500px-Cattedrale_di_Santa_Maria_del_Fiore_%E2%80%93_Il_Duomo_di_Firenze.jpg"
+  },
+  "Galleria_Vittorio_Emanuele_II@400": {
+    "file": "galleria-vittorio-emanuele-ii-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Galleria_Milano_%28179532365%29.jpeg/500px-Galleria_Milano_%28179532365%29.jpeg"
+  },
+  "Gallery_of_Maps@400": {
+    "file": "gallery-of-maps-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Gallery_of_Maps_Ceiling_%2815589784546%29.jpg/500px-Gallery_of_Maps_Ceiling_%2815589784546%29.jpg"
+  },
+  "Gelato@400": {
+    "file": "gelato-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/4/47/CafeMia.jpg"
+  },
+  "Gondola@400": {
+    "file": "gondola-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Gondola_Ride.jpg/500px-Gondola_Ride.jpg"
+  },
+  "Grand_Canal_(Venice)@400": {
+    "file": "grand-canal-venice-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/View_of_the_Grand_Canal_from_Rialto_to_Ca%27Foscari.jpg/500px-View_of_the_Grand_Canal_from_Rialto_to_Ca%27Foscari.jpg"
+  },
+  "La_Scala@400": {
+    "file": "la-scala-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Exterior_Teatro_Alla_Scala_high_quality_01.jpg/500px-Exterior_Teatro_Alla_Scala_high_quality_01.jpg"
+  },
+  "Lasagne@400": {
+    "file": "lasagne-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Lasagne_-_stonesoup.jpg/500px-Lasagne_-_stonesoup.jpg"
+  },
+  "Leaning_Tower_of_Pisa@400": {
+    "file": "leaning-tower-of-pisa-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Italy_-_Pisa_-_Leaning_Tower.jpg/500px-Italy_-_Pisa_-_Leaning_Tower.jpg"
+  },
+  "Milan@400": {
+    "file": "milan-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Milan_Cathedral_from_Piazza_del_Duomo.jpg/500px-Milan_Cathedral_from_Piazza_del_Duomo.jpg"
+  },
+  "Milan_Cathedral@400": {
+    "file": "milan-cathedral-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Milan_Cathedral_from_Piazza_del_Duomo.jpg/500px-Milan_Cathedral_from_Piazza_del_Duomo.jpg"
+  },
+  "Naples@400": {
+    "file": "naples-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Napoli_-_Maschio_Angioino_-_202209302342_3.jpg/500px-Napoli_-_Maschio_Angioino_-_202209302342_3.jpg"
+  },
+  "Neapolitan_pizza@400": {
+    "file": "neapolitan-pizza-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Neapolitan_pizza_at_Trappica_%2848701940197%29.jpg/500px-Neapolitan_pizza_at_Trappica_%2848701940197%29.jpg"
+  },
+  "Pantheon,_Rome@400": {
+    "file": "pantheon-rome-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Pantheon_%28Rome%29_-_Right_side_and_front.jpg/500px-Pantheon_%28Rome%29_-_Right_side_and_front.jpg"
+  },
+  "Piazza_Navona@400": {
+    "file": "piazza-navona-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Piazza_Navona_%28Rome%29_at_night.jpg/500px-Piazza_Navona_%28Rome%29_at_night.jpg"
+  },
+  "Piazza_San_Marco@400": {
+    "file": "piazza-san-marco-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Piazza_San_Marco_%28Venice%29_at_night-msu-2021-6449-.jpg/500px-Piazza_San_Marco_%28Venice%29_at_night-msu-2021-6449-.jpg"
+  },
+  "Piazza_dei_Miracoli@400": {
+    "file": "piazza-dei-miracoli-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Pisa-Piazza_dei_Miracoli-10-Totale_von_Baptisterium-1983-gje.jpg/500px-Pisa-Piazza_dei_Miracoli-10-Totale_von_Baptisterium-1983-gje.jpg"
+  },
+  "Pietà_(Michelangelo)@400": {
+    "file": "pieta-michelangelo-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Pieta_de_Michelangelo_-_Vaticano.jpg/500px-Pieta_de_Michelangelo_-_Vaticano.jpg"
+  },
+  "Pisa@400": {
+    "file": "pisa-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Italy_-_Pisa.jpg/500px-Italy_-_Pisa.jpg"
+  },
+  "Pisa_Baptistery@400": {
+    "file": "pisa-baptistery-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/CampodeiMiracoliPisa.jpg/500px-CampodeiMiracoliPisa.jpg"
+  },
+  "Pisa_Cathedral@400": {
+    "file": "pisa-cathedral-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Pisa_-_Cattedrale_da_Battistero_02.jpg/500px-Pisa_-_Cattedrale_da_Battistero_02.jpg"
+  },
+  "Ponte_Vecchio@400": {
+    "file": "ponte-vecchio-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Ponte_Vecchio_from_Ponte_alle_Grazie.jpg/500px-Ponte_Vecchio_from_Ponte_alle_Grazie.jpg"
+  },
+  "Positano@400": {
+    "file": "positano-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Positano_Sunset.JPG/500px-Positano_Sunset.JPG"
+  },
+  "Rialto_Bridge@400": {
+    "file": "rialto-bridge-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Rialto_2025_4.jpg/500px-Rialto_2025_4.jpg"
+  },
+  "Risotto_alla_milanese@400": {
+    "file": "risotto-alla-milanese-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Risotto_with_speck_and_goat_cheese_%286101067436%29.jpg/500px-Risotto_with_speck_and_goat_cheese_%286101067436%29.jpg"
+  },
+  "Roma_Termini_railway_station@400": {
+    "file": "roma-termini-railway-station-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Roma_termini_01.jpg/500px-Roma_termini_01.jpg"
+  },
+  "Roman_Forum@400": {
+    "file": "roman-forum-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Foro_Romano_Musei_Capitolini_Roma.jpg/500px-Foro_Romano_Musei_Capitolini_Roma.jpg"
+  },
+  "Roman_Holiday@400": {
+    "file": "roman-holiday-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Roman_Holiday_%281953_poster%29.jpg/500px-Roman_Holiday_%281953_poster%29.jpg"
+  },
+  "Rome@400": {
+    "file": "rome-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/500px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg"
+  },
+  "San_Siro@400": {
+    "file": "san-siro-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Stadio_Meazza_2021_3.jpg/500px-Stadio_Meazza_2021_3.jpg"
+  },
+  "Siena@400": {
+    "file": "siena-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Siena_Cattedrale_nuova_Vista_su_la_Piazza_del_Campo_2.jpg/500px-Siena_Cattedrale_nuova_Vista_su_la_Piazza_del_Campo_2.jpg"
+  },
+  "Sistine_Chapel@400": {
+    "file": "sistine-chapel-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Sistina-interno.jpg/500px-Sistina-interno.jpg"
+  },
+  "Sistine_Chapel_ceiling@400": {
+    "file": "sistine-chapel-ceiling-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Sistine_Chapel_ceiling_02_%28brightened%29.jpg/500px-Sistine_Chapel_ceiling_02_%28brightened%29.jpg"
+  },
+  "Spaghetti_alle_vongole@400": {
+    "file": "spaghetti-alle-vongole-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Spaghetti_vongole_2.jpg/500px-Spaghetti_vongole_2.jpg"
+  },
+  "Spanish_Steps@400": {
+    "file": "spanish-steps-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Piazza_di_Spagna_%28Rome%29_0004.jpg/500px-Piazza_di_Spagna_%28Rome%29_0004.jpg"
+  },
+  "St._Peter's_Square@400": {
+    "file": "st-peter-s-square-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/St_Peter%27s_Square%2C_Vatican_City_-_April_2007.jpg/500px-St_Peter%27s_Square%2C_Vatican_City_-_April_2007.jpg"
+  },
+  "St_Mark's_Basilica@400": {
+    "file": "st-mark-s-basilica-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Venezia_Basilica_di_San_Marco_Fassade_2.jpg/500px-Venezia_Basilica_di_San_Marco_Fassade_2.jpg"
+  },
+  "The_Creation_of_Adam@400": {
+    "file": "the-creation-of-adam-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/500px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg"
+  },
+  "The_Last_Judgment_(Michelangelo)@400": {
+    "file": "the-last-judgment-michelangelo-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Last_Judgement_%28Michelangelo%29.jpg/500px-Last_Judgement_%28Michelangelo%29.jpg"
+  },
+  "The_Last_Supper_(Leonardo)@400": {
+    "file": "the-last-supper-leonardo-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/The_Last_Supper_-_Leonardo_Da_Vinci_-_High_Resolution_32x16.jpg/500px-The_Last_Supper_-_Leonardo_Da_Vinci_-_High_Resolution_32x16.jpg"
+  },
+  "Tiramisu@400": {
+    "file": "tiramisu-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Tiramisu_-_Raffaele_Diomede.jpg/500px-Tiramisu_-_Raffaele_Diomede.jpg"
+  },
+  "Trevi_Fountain@400": {
+    "file": "trevi-fountain-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Trevi_Fountain_-_Roma.jpg/500px-Trevi_Fountain_-_Roma.jpg"
+  },
+  "Uffizi_Gallery@400": {
+    "file": "uffizi-gallery-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Florence%2C_Italy_-_panoramio_%28125%29.jpg/500px-Florence%2C_Italy_-_panoramio_%28125%29.jpg"
+  },
+  "Vatican_Gardens@400": {
+    "file": "vatican-gardens-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Vatikanische_Gaerten_Museen_Rom.jpg/500px-Vatikanische_Gaerten_Museen_Rom.jpg"
+  },
+  "Venice@400": {
+    "file": "venice-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Venezia_aerial_view.jpg/500px-Venezia_aerial_view.jpg"
+  },
+  "Verona@400": {
+    "file": "verona-400.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Collage_Verona.jpg/500px-Collage_Verona.jpg"
+  },
+  "Amalfi@1200": {
+    "file": "amalfi-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Amalfi_sea_view_Italy.JPG/1280px-Amalfi_sea_view_Italy.JPG"
+  },
+  "Amalfi_Coast@1200": {
+    "file": "amalfi-coast-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Amalfi_Coast_%28Italy%2C_October_2020%29_-_75_%2850558355441%29.jpg/1280px-Amalfi_Coast_%28Italy%2C_October_2020%29_-_75_%2850558355441%29.jpg"
+  },
+  "Apostolic_Palace@1200": {
+    "file": "apostolic-palace-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Saint_Peter%27s_Square_-_Vatican_City_-_DSC00638.jpg/1280px-Saint_Peter%27s_Square_-_Vatican_City_-_DSC00638.jpg"
+  },
+  "Bistecca_alla_fiorentina@1200": {
+    "file": "bistecca-alla-fiorentina-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/1/12/Bistecca_alla_fiorentina-01.jpg"
+  },
+  "Bramante_Staircase@1200": {
+    "file": "bramante-staircase-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Vatican_Museums_Spiral_Staircase_Looking_Up_2012.jpg/1280px-Vatican_Museums_Spiral_Staircase_Looking_Up_2012.jpg"
+  },
+  "Bridge_of_Sighs@1200": {
+    "file": "bridge-of-sighs-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Antonio_Contin_-_Ponte_dei_sospiri_%28Venice%29.jpg/1280px-Antonio_Contin_-_Ponte_dei_sospiri_%28Venice%29.jpg"
+  },
+  "Cacio_e_pepe@1200": {
+    "file": "cacio-e-pepe-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Cacio_e_pepe.jpg/1280px-Cacio_e_pepe.jpg"
+  },
+  "Carbonara@1200": {
+    "file": "carbonara-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Espaguetis_carbonara.jpg/1280px-Espaguetis_carbonara.jpg"
+  },
+  "Colosseum@1200": {
+    "file": "colosseum-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg"
+  },
+  "Doge's_Palace@1200": {
+    "file": "doge-s-palace-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/%28Venice%29_Doge%27s_Palace_and_campanile_of_St._Mark%27s_Basilica_facing_the_sea.jpg/1280px-%28Venice%29_Doge%27s_Palace_and_campanile_of_St._Mark%27s_Basilica_facing_the_sea.jpg"
+  },
+  "Espresso@1200": {
+    "file": "espresso-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Tazzina_di_caff%C3%A8_a_Ventimiglia.jpg/1280px-Tazzina_di_caff%C3%A8_a_Ventimiglia.jpg"
+  },
+  "Florence@1200": {
+    "file": "florence-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Firenze_-_Piazzale_Michelangelo%2C_Firenze%2C_Italy_-_April_6%2C_2015_02.jpg/1280px-Firenze_-_Piazzale_Michelangelo%2C_Firenze%2C_Italy_-_April_6%2C_2015_02.jpg"
+  },
+  "Florence_Cathedral@1200": {
+    "file": "florence-cathedral-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Cattedrale_di_Santa_Maria_del_Fiore_%E2%80%93_Il_Duomo_di_Firenze.jpg/1280px-Cattedrale_di_Santa_Maria_del_Fiore_%E2%80%93_Il_Duomo_di_Firenze.jpg"
+  },
+  "Galleria_Vittorio_Emanuele_II@1200": {
+    "file": "galleria-vittorio-emanuele-ii-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Galleria_Milano_%28179532365%29.jpeg/1280px-Galleria_Milano_%28179532365%29.jpeg"
+  },
+  "Gelato@1200": {
+    "file": "gelato-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/4/47/CafeMia.jpg"
+  },
+  "Milan@1200": {
+    "file": "milan-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Milan_Cathedral_from_Piazza_del_Duomo.jpg/1280px-Milan_Cathedral_from_Piazza_del_Duomo.jpg"
+  },
+  "Milan_Cathedral@1200": {
+    "file": "milan-cathedral-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Milan_Cathedral_from_Piazza_del_Duomo.jpg/1280px-Milan_Cathedral_from_Piazza_del_Duomo.jpg"
+  },
+  "Naples@1200": {
+    "file": "naples-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Napoli_-_Maschio_Angioino_-_202209302342_3.jpg/1280px-Napoli_-_Maschio_Angioino_-_202209302342_3.jpg"
+  },
+  "Pantheon,_Rome@1200": {
+    "file": "pantheon-rome-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Pantheon_%28Rome%29_-_Right_side_and_front.jpg/1280px-Pantheon_%28Rome%29_-_Right_side_and_front.jpg"
+  },
+  "Pisa@1200": {
+    "file": "pisa-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Italy_-_Pisa.jpg/1280px-Italy_-_Pisa.jpg"
+  },
+  "Positano@1200": {
+    "file": "positano-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Positano_Sunset.JPG/1280px-Positano_Sunset.JPG"
+  },
+  "Rialto_Bridge@1200": {
+    "file": "rialto-bridge-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Rialto_2025_4.jpg/1280px-Rialto_2025_4.jpg"
+  },
+  "Rome@1200": {
+    "file": "rome-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg"
+  },
+  "San_Siro@1200": {
+    "file": "san-siro-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Stadio_Meazza_2021_3.jpg/1280px-Stadio_Meazza_2021_3.jpg"
+  },
+  "Sistine_Chapel@1200": {
+    "file": "sistine-chapel-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/8/82/Sistina-interno.jpg"
+  },
+  "Spaghetti_alle_vongole@1200": {
+    "file": "spaghetti-alle-vongole-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/5/59/Spaghetti_vongole_2.jpg"
+  },
+  "Spanish_Steps@1200": {
+    "file": "spanish-steps-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Piazza_di_Spagna_%28Rome%29_0004.jpg"
+  },
+  "St._Peter's_Basilica@1200": {
+    "file": "st-peter-s-basilica-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Basilica_di_San_Pietro_in_Vaticano_September_2015-1a.jpg/1280px-Basilica_di_San_Pietro_in_Vaticano_September_2015-1a.jpg"
+  },
+  "St._Peter's_Square@1200": {
+    "file": "st-peter-s-square-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/St_Peter%27s_Square%2C_Vatican_City_-_April_2007.jpg/1280px-St_Peter%27s_Square%2C_Vatican_City_-_April_2007.jpg"
+  },
+  "St_Mark's_Basilica@1200": {
+    "file": "st-mark-s-basilica-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Venezia_Basilica_di_San_Marco_Fassade_2.jpg/1280px-Venezia_Basilica_di_San_Marco_Fassade_2.jpg"
+  },
+  "The_Creation_of_Adam@1200": {
+    "file": "the-creation-of-adam-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/1280px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg"
+  },
+  "The_Last_Judgment_(Michelangelo)@1200": {
+    "file": "the-last-judgment-michelangelo-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Last_Judgement_%28Michelangelo%29.jpg/1280px-Last_Judgement_%28Michelangelo%29.jpg"
+  },
+  "The_Last_Supper_(Leonardo)@1200": {
+    "file": "the-last-supper-leonardo-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/The_Last_Supper_-_Leonardo_Da_Vinci_-_High_Resolution_32x16.jpg/1280px-The_Last_Supper_-_Leonardo_Da_Vinci_-_High_Resolution_32x16.jpg"
+  },
+  "Tiramisu@1200": {
+    "file": "tiramisu-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Tiramisu_-_Raffaele_Diomede.jpg/1280px-Tiramisu_-_Raffaele_Diomede.jpg"
+  },
+  "Verona@1200": {
+    "file": "verona-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Collage_Verona.jpg/1280px-Collage_Verona.jpg"
+  },
+  "Gallery_of_Maps@1200": {
+    "file": "gallery-of-maps-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Gallery_of_Maps_Ceiling_%2815589784546%29.jpg/1280px-Gallery_of_Maps_Ceiling_%2815589784546%29.jpg"
+  },
+  "Gondola@1200": {
+    "file": "gondola-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Gondola_Ride.jpg/1280px-Gondola_Ride.jpg"
+  },
+  "Grand_Canal_(Venice)@1200": {
+    "file": "grand-canal-venice-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/View_of_the_Grand_Canal_from_Rialto_to_Ca%27Foscari.jpg/1280px-View_of_the_Grand_Canal_from_Rialto_to_Ca%27Foscari.jpg"
+  },
+  "La_Scala@1200": {
+    "file": "la-scala-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Exterior_Teatro_Alla_Scala_high_quality_01.jpg/1280px-Exterior_Teatro_Alla_Scala_high_quality_01.jpg"
+  },
+  "Lasagne@1200": {
+    "file": "lasagne-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Lasagne_-_stonesoup.jpg/1280px-Lasagne_-_stonesoup.jpg"
+  },
+  "Leaning_Tower_of_Pisa@1200": {
+    "file": "leaning-tower-of-pisa-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Italy_-_Pisa_-_Leaning_Tower.jpg/1280px-Italy_-_Pisa_-_Leaning_Tower.jpg"
+  },
+  "Neapolitan_pizza@1200": {
+    "file": "neapolitan-pizza-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Neapolitan_pizza_at_Trappica_%2848701940197%29.jpg/1280px-Neapolitan_pizza_at_Trappica_%2848701940197%29.jpg"
+  },
+  "Piazza_Navona@1200": {
+    "file": "piazza-navona-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Piazza_Navona_%28Rome%29_at_night.jpg/1280px-Piazza_Navona_%28Rome%29_at_night.jpg"
+  },
+  "Piazza_San_Marco@1200": {
+    "file": "piazza-san-marco-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Piazza_San_Marco_%28Venice%29_at_night-msu-2021-6449-.jpg/1280px-Piazza_San_Marco_%28Venice%29_at_night-msu-2021-6449-.jpg"
+  },
+  "Piazza_dei_Miracoli@1200": {
+    "file": "piazza-dei-miracoli-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Pisa-Piazza_dei_Miracoli-10-Totale_von_Baptisterium-1983-gje.jpg/1280px-Pisa-Piazza_dei_Miracoli-10-Totale_von_Baptisterium-1983-gje.jpg"
+  },
+  "Pietà_(Michelangelo)@1200": {
+    "file": "pieta-michelangelo-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Pieta_de_Michelangelo_-_Vaticano.jpg/1280px-Pieta_de_Michelangelo_-_Vaticano.jpg"
+  },
+  "Pisa_Baptistery@1200": {
+    "file": "pisa-baptistery-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/CampodeiMiracoliPisa.jpg/1280px-CampodeiMiracoliPisa.jpg"
+  },
+  "Pisa_Cathedral@1200": {
+    "file": "pisa-cathedral-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Pisa_-_Cattedrale_da_Battistero_02.jpg/1280px-Pisa_-_Cattedrale_da_Battistero_02.jpg"
+  },
+  "Ponte_Vecchio@1200": {
+    "file": "ponte-vecchio-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Ponte_Vecchio_from_Ponte_alle_Grazie.jpg/1280px-Ponte_Vecchio_from_Ponte_alle_Grazie.jpg"
+  },
+  "Risotto_alla_milanese@1200": {
+    "file": "risotto-alla-milanese-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Risotto_with_speck_and_goat_cheese_%286101067436%29.jpg/1280px-Risotto_with_speck_and_goat_cheese_%286101067436%29.jpg"
+  },
+  "Roma_Termini_railway_station@1200": {
+    "file": "roma-termini-railway-station-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Roma_termini_01.jpg/1280px-Roma_termini_01.jpg"
+  },
+  "Roman_Forum@1200": {
+    "file": "roman-forum-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Foro_Romano_Musei_Capitolini_Roma.jpg/1280px-Foro_Romano_Musei_Capitolini_Roma.jpg"
+  },
+  "Roman_Holiday@1200": {
+    "file": "roman-holiday-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Roman_Holiday_%281953_poster%29.jpg/1280px-Roman_Holiday_%281953_poster%29.jpg"
+  },
+  "Siena@1200": {
+    "file": "siena-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Siena_Cattedrale_nuova_Vista_su_la_Piazza_del_Campo_2.jpg/1280px-Siena_Cattedrale_nuova_Vista_su_la_Piazza_del_Campo_2.jpg"
+  },
+  "Sistine_Chapel_ceiling@1200": {
+    "file": "sistine-chapel-ceiling-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Sistine_Chapel_ceiling_02_%28brightened%29.jpg/1280px-Sistine_Chapel_ceiling_02_%28brightened%29.jpg"
+  },
+  "Trevi_Fountain@1200": {
+    "file": "trevi-fountain-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Trevi_Fountain_-_Roma.jpg/1280px-Trevi_Fountain_-_Roma.jpg"
+  },
+  "Uffizi_Gallery@1200": {
+    "file": "uffizi-gallery-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Florence%2C_Italy_-_panoramio_%28125%29.jpg/1280px-Florence%2C_Italy_-_panoramio_%28125%29.jpg"
+  },
+  "Vatican_Gardens@1200": {
+    "file": "vatican-gardens-1200.jpg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Vatikanische_Gaerten_Museen_Rom.jpg/1280px-Vatikanische_Gaerten_Museen_Rom.jpg"
+  }
+}

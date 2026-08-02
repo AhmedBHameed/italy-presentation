@@ -1,18 +1,27 @@
 # Discover Italy 🇮🇹
 
-An interactive first-time travel guide to Italy — a clickable atlas, a trip planner, and the full
-route from Rome to the Amalfi Coast.
+An interactive first-time travel guide to Italy, rebuilt to follow the source document from cover to
+last page. It is read **top to bottom** — nine chapters, each one handing over to the next. There is
+no menu and there are no jump links, so the guide plays like a presentation rather than a website you
+have to navigate.
 
-## What's in it
+## The nine chapters
 
-| Chapter | What it does |
-| --- | --- |
-| **01 · A country of twenty stories** | The introduction, with clickable landmark chips. |
-| **02 · Twenty regions, five on the route** | A d3 + TopoJSON map of all 20 regions. The five on the route glow gold; clicking one zooms in, drops **city pins onto the map itself**, and opens its dossier with the region → city chain, recommended days, and a jump straight to that chapter. |
-| **03 · Planning** | The three core decisions, then the four planning decisions: an interactive season selector wired to a twelve-month strip with crowd/price meters (September folded into the shoulder tab), a 7–10 vs 10–14 day itinerary toggle whose stops fly the map to their region, the budget, and the booking order. |
-| **04 · Rome** | Five landmark cards opening full dossiers — including a working Trevi coin toss — plus the walking route with real distances (6.55 km), where to stay, transport, and the food. |
-| **05 · Vatican City** | A hand-drawn interactive plan with six clickable hotspots, the nine Genesis scenes on the Sistine ceiling, and the four Michelangelo masterpieces. |
-| **06 · The rest of the route** | Florence & Pisa, Venice, Milan, and Naples & the Amalfi Coast — each a full page with attractions, travel options, suggested order, where to stay, transport and food. |
+| # | Chapter | What is in it |
+| --- | --- | --- |
+| **cover** | **Italy** | The country drawn as its own flag, the lede, and the four numbers that frame the trip. |
+| **01** | **Twenty regions, five on the route** | The country introduction, then a d3 + TopoJSON atlas of all 20 regions. The five on the route glow gold; clicking one zooms in, drops **city pins onto the map itself**, and opens its dossier — region → city chain, recommended days, and which chapter it turns up in. |
+| **02** | **Planning the trip** | The three core decisions, then the four planning decisions: a season selector wired to a twelve-month strip with crowd/price meters (September folded into the shoulder tab), a 7–10 vs 10–14 day itinerary toggle, the budget, and the booking order. |
+| **03** | **Rome, the Eternal City** | The five landmarks in the document's own order — Colosseum, Trevi, Pantheon, Vatican City, Spanish Steps — each opening a full dossier, including a working Trevi coin toss. |
+| **04** | **Inside Vatican City** | A hand-drawn interactive plan with six clickable hotspots, the nine Genesis scenes on the Sistine ceiling, and the four Michelangelo masterpieces. |
+| **05** | **Rome on foot** | The walking route with real distances (6.55 km end to end), where to stay, how to get around, and the food. |
+| **06** | **Florence & Pisa** | Tuscany: how to travel from Rome, the Duomo, the Uffizi, Piazza dei Miracoli, and where to stay. |
+| **07** | **Venice** | The best order to see it, the Bridge of Sighs and its two legends, the Grand Canal, the Rialto, and how to move without roads. |
+| **08** | **Milan** | The Duomo, the Galleria and its bull mosaic, The Last Supper, La Scala, San Siro — and the four ways to reach Naples. |
+| **09** | **Naples & the Amalfi Coast** | Where the route ends: Naples, Positano, Amalfi, and the food. |
+
+Both a **dark** and a **light** theme ship with the site. The switch sits in the top bar, the choice is
+remembered, and an unvisited reader gets whichever their system prefers.
 
 ## Run it
 
@@ -34,25 +43,55 @@ npm install
 npm start        # or: npm run dev   (node --watch)
 ```
 
+## Offline by default
+
+Every photograph and every typeface is stored in the repository, so the guide runs with **no outbound
+network at all** — verified by loading it with every non-local request blocked.
+
+```bash
+npm run images          # fetch anything missing into public/img/
+npm run images:force    # re-download everything
+npm run fonts           # re-fetch the three typefaces into public/fonts/
+```
+
+`scripts/fetch-images.js` walks `src/content.js` for `wiki:` keys, asks Wikimedia for each article's
+lead photograph at the two widths the page uses (400 px thumbnails, 1200 px everything else), saves
+them under `public/img/`, and writes `public/img/manifest.json`.
+
+At request time `/api/image/:title` resolves in three tiers:
+
+1. the downloaded file, redirected to an immutable `/img/…` URL — the normal path;
+2. a live Wikipedia lookup, cached in memory, for anything the download missed;
+3. a generated SVG placeholder, so a missing photo is never a broken image.
+
+Set `PREWARM_IMAGES=0` to skip the boot-time warm-up of tier 2.
+
+`scripts/fetch-fonts.js` does the same job for Fraunces, Inter and JetBrains Mono: it pulls the woff2
+subsets and writes `public/fonts/fonts.css`, which the page links instead of Google Fonts.
+
 ## How it is put together
 
 ```
-server.js                      Express server + JSON API + image resolver
-src/content.js                 the entire guide as structured data
+server.js                      Express server + JSON API + three-tier image resolver
+src/content.js                 the entire guide as structured data, chapters included
+scripts/fetch-images.js        downloads every photograph for offline use
+scripts/fetch-fonts.js         downloads the typefaces for offline use
 public/index.html              page shell — every section is filled in by JS
-public/css/styles.css          the whole design system
-public/js/ui.js                DOM helpers, modal, reveal-on-scroll, nav
-public/js/map.js               the d3 atlas (regions, city pins, hero silhouette)
-public/js/app.js               renders every section from /api/content
+public/css/styles.css          the design system, as two themes over one token set
+public/js/ui.js                DOM helpers, modal, reveal-on-scroll, theme switch, reading position
+public/js/map.js               the d3 atlas (regions, city pins, flag-filled cover map)
+public/js/app.js               renders the chapters from /api/content
 public/data/*.topo.json        TopoJSON boundaries of the 20 regions
+public/img/                    the photographs + manifest.json
+public/fonts/                  the typefaces + generated @font-face sheet
 Dockerfile                     multi-stage build, non-root, healthchecked
 ```
 
-There is no build step and no front-end framework. `d3` and `topojson-client` are served straight
-out of `node_modules` at `/vendor/…`, so the page never depends on a CDN.
+There is no build step and no front-end framework. `d3` and `topojson-client` are served straight out
+of `node_modules` at `/vendor/…`, so the page never depends on a CDN.
 
-All content lives in `src/content.js`. Edit that one file and the whole site follows — nothing is
-hard-coded in the HTML.
+All content lives in `src/content.js` — including the `chapters` array that defines the reading order.
+Edit that one file and the whole site follows; nothing is hard-coded in the HTML.
 
 ## The API
 
@@ -61,6 +100,7 @@ The guide is available as JSON; the front end boots from `/api/content`.
 | Endpoint | What it returns |
 | --- | --- |
 | `GET /api/content` | everything in one payload |
+| `GET /api/chapters` | the reading order |
 | `GET /api/overview` | the country introduction |
 | `GET /api/regions` | all 20 regions, flagged with `inGuide`, with city pins |
 | `GET /api/regions/:name` | one region + its route chain |
@@ -68,27 +108,10 @@ The guide is available as JSON; the front end boots from `/api/content`.
 | `GET /api/rome` | Rome, its attractions, walking route, stays, transport and food |
 | `GET /api/rome/attractions/:id` | one attraction (`colosseum`, `trevi`, `pantheon`, `vatican`, `spanish-steps`) |
 | `GET /api/vatican` | hotspots, the Sistine ceiling, masterpieces |
-| `GET /api/destinations` | the four post-Rome stops |
+| `GET /api/destinations` | the four stops after Rome |
 | `GET /api/destinations/:id` | one stop (`tuscany`, `venice`, `milan`, `naples`) |
-| `GET /api/image/:title?w=` | see below |
+| `GET /api/image/:title?w=` | see above |
 | `GET /healthz` | liveness, used by the Docker healthcheck |
-
-### `/api/image/:title`
-
-Photographs are not bundled. The server resolves a Wikipedia article title to its lead photograph at
-the width the page asked for (`w=400`, `900` or `1600`), caches it, and 302-redirects the browser to
-Wikimedia. That keeps the repository small and the images correctly licensed.
-
-Two details make it fast and safe:
-
-- **Warm on boot.** All titles are resolved in a single batched Action-API call per width — 118 image
-  variants in about 3 seconds — so the first visitor hits a warm cache instead of waiting on ~60
-  round trips.
-- **Never broken.** If a lookup fails (no outbound network, rate limit, unknown title) the server
-  returns a generated SVG placeholder rather than a broken image, so the site still works fully
-  offline apart from the photography.
-
-Set `PREWARM_IMAGES=0` to skip the warm-up.
 
 ---
 

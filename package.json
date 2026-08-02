@@ -2,11 +2,14 @@
   "name": "discover-italy",
   "version": "1.0.0",
   "private": true,
-  "description": "An interactive learning site built from Italy.pdf — clickable map, landmark galleries and a quiz.",
+  "description": "An interactive, linear travel guide to Italy built from Italy.pdf — a clickable atlas, nine chapters and two themes.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
+    "images": "node scripts/fetch-images.js",
+    "images:force": "node scripts/fetch-images.js --force",
+    "fonts": "node scripts/fetch-fonts.js",
     "docker:build": "docker build -t discover-italy .",
     "docker:run": "docker run --rm -p 4041:4041 --name discover-italy discover-italy"
   },

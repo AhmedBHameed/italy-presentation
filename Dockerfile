@@ -27,6 +27,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
 COPY server.js ./
 COPY src ./src
+COPY scripts ./scripts
 COPY public ./public
 
 # Run unprivileged. The `node` user ships with the official image.

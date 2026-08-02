@@ -9,6 +9,79 @@
 'use strict';
 
 /* ===========================================================================
+ * 0. THE CHAPTERS
+ *    The site is read top to bottom, in the order the source document runs:
+ *    the country, the plan, Rome, the Vatican, then the four stops after it.
+ *    Every section id below is also the id of a <section> on the page.
+ * ======================================================================== */
+
+const chapters = [
+  {
+    id: 'atlas',
+    n: '01',
+    title: 'Twenty regions, five on the route',
+    kicker: 'the country',
+    blurb: 'Where Italy is, how it is divided, and the five regions this guide travels through.',
+  },
+  {
+    id: 'planning',
+    n: '02',
+    title: 'Planning the trip',
+    kicker: 'four decisions',
+    blurb: 'When to go, how long to stay, what it costs, and what to book first.',
+  },
+  {
+    id: 'rome',
+    n: '03',
+    title: 'Rome, the Eternal City',
+    kicker: 'Lazio · 3–4 days',
+    blurb: 'The five landmarks every first visit is built around.',
+  },
+  {
+    id: 'vatican',
+    n: '04',
+    title: 'Inside Vatican City',
+    kicker: 'a country inside a city',
+    blurb: 'The smallest country in the world, and the four masterpieces inside it.',
+  },
+  {
+    id: 'rome-on-foot',
+    n: '05',
+    title: 'Rome on foot',
+    kicker: '6.55 km, end to end',
+    blurb: 'The walking route, where to sleep, how to move, and what to eat.',
+  },
+  {
+    id: 'tuscany',
+    n: '06',
+    title: 'Florence & Pisa',
+    kicker: 'Tuscany · 2–3 days',
+    blurb: 'The birthplace of the Renaissance, and the tower that will not fall.',
+  },
+  {
+    id: 'venice',
+    n: '07',
+    title: 'Venice',
+    kicker: 'Veneto · 2 days',
+    blurb: 'A hundred islands, four hundred bridges, and no cars at all.',
+  },
+  {
+    id: 'milan',
+    n: '08',
+    title: 'Milan',
+    kicker: 'Lombardy · 2 days',
+    blurb: 'Fashion, football, and Leonardo’s Last Supper.',
+  },
+  {
+    id: 'naples',
+    n: '09',
+    title: 'Naples & the Amalfi Coast',
+    kicker: 'Campania · 3 days',
+    blurb: 'Where the route ends: pizza, cliffs and the bluest water in Italy.',
+  },
+];
+
+/* ===========================================================================
  * 1. THE COUNTRY
  * ======================================================================== */
 
@@ -49,7 +122,8 @@ const guideRegions = {
     days: '3–4 days',
     order: 1,
     summary: 'The capital, and the natural first stop of any first-time trip.',
-    sectionId: 'rome',
+    chapter: 'rome',
+    chapterN: '03',
     cities: [
       { name: 'Rome', wiki: 'Rome', note: 'The Eternal City — capital of Italy and of the Roman Empire.' },
     ],
@@ -61,8 +135,8 @@ const guideRegions = {
     days: '2–3 days',
     order: 2,
     summary: 'Florence, the birthplace of the Renaissance, with Pisa an easy half-day away.',
-    sectionId: 'destinations',
-    destinationId: 'tuscany',
+    chapter: 'tuscany',
+    chapterN: '06',
     cities: [
       { name: 'Florence', wiki: 'Florence', note: 'Capital of Tuscany and birthplace of the Renaissance.' },
       { name: 'Pisa', wiki: 'Pisa', note: 'A half-day or full-day trip from Florence.' },
@@ -76,8 +150,8 @@ const guideRegions = {
     days: '2 days',
     order: 3,
     summary: 'A city built on more than 100 islands, where boats replace cars.',
-    sectionId: 'destinations',
-    destinationId: 'venice',
+    chapter: 'venice',
+    chapterN: '07',
     cities: [
       { name: 'Venice', wiki: 'Venice', note: 'Built on 100+ islands, linked by over 400 bridges.' },
       { name: 'Verona', wiki: 'Verona', note: 'The second Veneto city named in the guide.' },
@@ -90,8 +164,8 @@ const guideRegions = {
     days: '2 days',
     order: 4,
     summary: "Italy's financial, fashion and design capital — and a football pilgrimage.",
-    sectionId: 'destinations',
-    destinationId: 'milan',
+    chapter: 'milan',
+    chapterN: '08',
     cities: [
       { name: 'Milan', wiki: 'Milan', note: "Italy's second-largest city, capital of Lombardy." },
     ],
@@ -103,8 +177,8 @@ const guideRegions = {
     days: '3 days',
     order: 5,
     summary: 'One of the oldest cities in Europe, and the gateway to the Amalfi Coast.',
-    sectionId: 'destinations',
-    destinationId: 'naples',
+    chapter: 'naples',
+    chapterN: '09',
     cities: [
       { name: 'Naples', wiki: 'Naples', note: 'Capital of Campania and gateway to the Amalfi Coast.' },
       { name: 'Amalfi Coast', wiki: 'Amalfi_Coast', note: 'A UNESCO World Heritage Site.' },
@@ -540,7 +614,7 @@ const rome = {
   ],
 
   /* ---- The walking route, with real distances ---- */
-  walkTitle: 'Rome on foot',
+  walkTitle: 'The walking route, in order',
   walkIntro:
     'Many attractions are close enough to walk between. This is the order that works, with the distance ' +
     'and walking time for each leg.',
@@ -632,8 +706,8 @@ const vatican = {
       name: "St. Peter's Square",
       italian: 'Piazza San Pietro',
       x: 74,
-      y: 53,
-      label: { anchor: 'middle', dx: 0, dy: 13.6 },
+      y: 50,
+      label: { anchor: 'middle', dx: 3, dy: -9.5 },
       blurb:
         'The great oval piazza in front of the basilica, ringed by colonnades and centred on an obelisk. ' +
         'One of the three sights the guide names for Vatican City.',
@@ -647,9 +721,9 @@ const vatican = {
       id: 'basilica',
       name: "St. Peter's Basilica",
       italian: 'Basilica di San Pietro',
-      x: 48,
-      y: 55,
-      label: { anchor: 'middle', dx: 0, dy: 5.6 },
+      x: 48.5,
+      y: 51,
+      label: { anchor: 'middle', dx: -4, dy: 10.5 },
       blurb:
         'The basilica at the heart of the Vatican, crowned by its famous dome. Inside stands ' +
         "Michelangelo's Pietà, carved from a single block of marble.",
@@ -663,9 +737,9 @@ const vatican = {
       id: 'museums',
       name: 'Vatican Museums',
       italian: 'Musei Vaticani',
-      x: 62,
-      y: 19,
-      label: { anchor: 'middle', dx: 0, dy: -3.6 },
+      x: 56,
+      y: 17.5,
+      label: { anchor: 'middle', dx: 0, dy: -7.5 },
       blurb:
         'Where visitors can admire the beautiful Sistine Chapel. Miles of galleries lead there — the ' +
         'entrance to the Vatican Museums is where almost every visit begins.',
@@ -679,9 +753,9 @@ const vatican = {
       id: 'sistine',
       name: 'Sistine Chapel',
       italian: 'Cappella Sistina',
-      x: 46.5,
-      y: 38.5,
-      label: { anchor: 'end', dx: -3, dy: 1 },
+      x: 43.5,
+      y: 36,
+      label: { anchor: 'end', dx: -4.5, dy: 1 },
       blurb:
         'The chapel inside the Vatican Museums. Its ceiling carries nine scenes from the Book of Genesis, ' +
         'and its altar wall The Last Judgment — both by Michelangelo.',
@@ -696,9 +770,9 @@ const vatican = {
       id: 'palace',
       name: 'Apostolic Palace',
       italian: 'Palazzo Apostolico',
-      x: 60,
-      y: 39,
-      label: { anchor: 'middle', dx: 0, dy: -8.5 },
+      x: 55,
+      y: 37.5,
+      label: { anchor: 'middle', dx: 0, dy: -9 },
       blurb: 'The official residence of the Pope, whose home the guide names as Vatican City itself.',
       wiki: 'Apostolic_Palace',
       gallery: [{ wiki: 'Apostolic_Palace', caption: 'The Apostolic Palace' }],
@@ -707,9 +781,9 @@ const vatican = {
       id: 'gardens',
       name: 'Vatican Gardens',
       italian: 'Giardini Vaticani',
-      x: 26,
-      y: 42,
-      label: { anchor: 'middle', dx: 0, dy: 5.6 },
+      x: 25,
+      y: 39,
+      label: { anchor: 'middle', dx: 0, dy: 7 },
       blurb: "More than half the territory of the world's smallest country is garden.",
       wiki: 'Vatican_Gardens',
       gallery: [{ wiki: 'Vatican_Gardens', caption: 'The Vatican Gardens' }],
@@ -1244,6 +1318,7 @@ const author = {
 };
 
 module.exports = {
+  chapters,
   overview,
   guideRegions,
   amalfiNote,
@@ -1257,6 +1332,6 @@ module.exports = {
   meta: {
     title: 'Discover Italy',
     subtitle: 'A first-time travel guide',
-    chapters: 6,
+    chapters: chapters.length,
   },
 };

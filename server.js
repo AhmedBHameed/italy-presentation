@@ -1,5 +1,6 @@
 "use strict";
 
+const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const content = require("./src/content");
@@ -37,6 +38,7 @@ api.get("/", (_req, res) => {
     subtitle: content.meta.subtitle,
     endpoints: [
       "/api/content",
+      "/api/chapters",
       "/api/overview",
       "/api/regions",
       "/api/regions/:name",
@@ -57,6 +59,11 @@ api.get("/content", (_req, res) => {
   res.set("Cache-Control", "public, max-age=300");
   res.json(content);
 });
+
+/** The reading order — the front end builds its chapter frames from this. */
+api.get("/chapters", (_req, res) =>
+  res.json({ count: content.chapters.length, chapters: content.chapters })
+);
 
 api.get("/overview", (_req, res) => res.json(content.overview));
 api.get("/planning", (_req, res) => res.json(content.planning));
@@ -113,25 +120,43 @@ api.get("/rome/attractions/:id", (req, res) => {
 });
 
 /* ---------------------------------------------------------------------------
- * /api/image/:title?w=900
+ * /api/image/:title?w=1200
  *
- * Resolves a Wikipedia article title to its lead photograph, at roughly the
- * width the page actually needs, and redirects the browser there. Asking
- * Wikimedia for a sized thumbnail rather than the original matters: several of
- * these originals are 3840px wide, which makes a card grid crawl.
+ * Three tiers, in order:
  *
- * Results are cached in memory per (title, width) so each is looked up once per
- * process. If the lookup fails (offline container, rate limit, unknown title)
- * we serve a generated SVG placeholder rather than a broken image.
+ *   1. public/img — the photographs downloaded by `npm run images`. This is the
+ *      normal path, and it means the site is fully self-contained: no CDN, no
+ *      Wikipedia, no network at all.
+ *   2. A live lookup against Wikipedia, cached in memory, for anything the
+ *      download missed.
+ *   3. A generated SVG placeholder, so a missing photo is never a broken image.
  * ------------------------------------------------------------------------ */
+
+const IMG_DIR = path.join(__dirname, "public", "img");
+const imageManifest = (() => {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(IMG_DIR, "manifest.json"), "utf8"));
+  } catch {
+    return {};
+  }
+})();
 
 const imageCache = new Map();
 const IMAGE_TTL_MS = 12 * 60 * 60 * 1000;
 const WIKI_API = "https://en.wikipedia.org/w/api.php";
 const WIKI_SUMMARY = "https://en.wikipedia.org/api/rest_v1/page/summary/";
 const USER_AGENT =
-  "DiscoverItaly/1.0 (educational demo; local docker deployment)";
-const ALLOWED_WIDTHS = [400, 900, 1600];
+  "DiscoverItaly/2.0 (educational demo; local docker deployment)";
+const ALLOWED_WIDTHS = [400, 1200];
+
+/** The downloaded file for a title, at the closest width we actually stored. */
+function localImage(title, width) {
+  for (const w of width <= 400 ? [400, 1200] : [1200, 400]) {
+    const hit = imageManifest[`${title}@${w}`];
+    if (hit && fs.existsSync(path.join(IMG_DIR, hit.file))) return hit.file;
+  }
+  return null;
+}
 
 /** Snap an arbitrary ?w= to one of a few sizes, so the cache stays small. */
 function normalizeWidth(raw) {
@@ -288,14 +313,20 @@ async function prewarmBatch(titles, width) {
 }
 
 /**
- * Resolve every image up front, in the background. Without this the first
- * visitor waits on ~30 Wikipedia lookups while the page renders; with it,
- * their requests hit a warm cache. Failures are ignored — a cache miss simply
- * falls back to the on-demand path, which has its own placeholder.
+ * Resolve up front, in the background, anything `npm run images` did not
+ * already store locally — so the first visitor hits a warm cache instead of
+ * ~30 Wikipedia lookups. Failures are ignored: a miss falls back to the
+ * on-demand path, which has its own placeholder.
  */
 async function prewarmImages() {
-  const titles = [...collectWikiTitles(content)];
-  const widths = [900, 400];
+  const widths = [1200, 400];
+  const titles = [...collectWikiTitles(content)].filter(
+    (t) => !widths.every((w) => localImage(t, w))
+  );
+  if (!titles.length) {
+    console.log("  images: all stored locally — nothing to fetch");
+    return;
+  }
   const started = Date.now();
   let warmed = 0;
 
@@ -322,6 +353,15 @@ api.get("/image/:title", async (req, res) => {
   const label = (req.query.label || title.replace(/_/g, " "))
     .toString()
     .slice(0, 80);
+
+  // Tier 1 — the downloaded copy. Redirect rather than stream, so the browser
+  // caches it under a stable, immutable URL.
+  const local = localImage(title, width);
+  if (local) {
+    res.set("Cache-Control", "public, max-age=604800, immutable");
+    return res.redirect(302, `/img/${local}`);
+  }
+
   try {
     const url = await resolveImage(title, width);
     res.set("Cache-Control", "public, max-age=86400");
@@ -344,6 +384,8 @@ app.get("/healthz", (_req, res) => {
   res.json({
     status: "ok",
     uptimeSeconds: Math.round(process.uptime()),
+    chapters: content.chapters.length,
+    imagesStoredLocally: Object.keys(imageManifest).length,
     imagesCached: imageCache.size,
     node: process.version,
   });
@@ -373,6 +415,13 @@ app.use(
       immutable: true,
     },
   ),
+);
+
+// Downloaded photographs: content-addressed by title and width, so they can be
+// cached hard.
+app.use(
+  "/img",
+  express.static(IMG_DIR, { maxAge: "30d", immutable: true, fallthrough: true }),
 );
 
 app.use(

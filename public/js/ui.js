@@ -1,9 +1,10 @@
 /* ===========================================================================
    ui.js — tiny helpers shared by the rest of the front end.
-   No framework: just DOM, an image-URL builder, a modal and a reveal observer.
+   No framework: DOM helpers, an image-URL builder, a modal, a reveal observer,
+   the theme switch, and the reading-position chrome.
    ======================================================================== */
 
-/* global window, document */
+/* global window, document, localStorage */
 
 const UI = (() => {
   'use strict';
@@ -26,21 +27,21 @@ const UI = (() => {
   }
 
   /**
-   * Image URL. Goes through our own server, which resolves the Wikipedia
-   * article to its lead photo at the width we ask for, caches it, and falls
-   * back to a generated placeholder if the lookup fails — so this never
-   * renders a broken image.
+   * Image URL. Goes through our own server, which serves the photograph from
+   * public/img when it has been downloaded (the normal case — see
+   * `npm run images`), falls back to resolving it live from Wikipedia, and
+   * falls back again to a generated placeholder. It never renders broken.
    *
-   * width: 400 for thumbnails, 900 for cards, 1600 for the lightbox.
+   * width: 400 for thumbnails, 1200 for anything larger.
    */
-  function img(wikiTitle, label, width = 900) {
+  function img(wikiTitle, label, width = 1200) {
     const t = encodeURIComponent(wikiTitle);
     const l = encodeURIComponent(label || String(wikiTitle).replace(/_/g, ' '));
     return `/api/image/${t}?w=${width}&label=${l}`;
   }
 
   /** <img> markup that fades in once the photo actually arrives. */
-  function imgTag(wikiTitle, alt, width = 900) {
+  function imgTag(wikiTitle, alt, width = 1200) {
     return (
       `<img class="ph" src="${esc(img(wikiTitle, alt, width))}" alt="${esc(alt || wikiTitle)}" ` +
       `loading="lazy" decoding="async" onload="this.classList.add('ready')">`
@@ -85,7 +86,7 @@ const UI = (() => {
   function openImage(wikiTitle, title, caption) {
     openModal(`
       <figure class="lightbox-figure">
-        ${imgTag(wikiTitle, title, 1600)}
+        ${imgTag(wikiTitle, title, 1200)}
         <figcaption>
           <b>${esc(title)}</b>
           ${caption ? esc(caption) : ''}
@@ -107,7 +108,7 @@ const UI = (() => {
               }
             });
           },
-          { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+          { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
         )
       : null;
 
@@ -120,54 +121,83 @@ const UI = (() => {
     });
   }
 
-  /* ------------------------------------------------------ Nav & scrollbar */
+  /* ---------------------------------------------------------------- Theme */
 
-  function initChrome() {
-    const nav = $('#nav');
+  const THEME_KEY = 'italy-theme';
+
+  function setTheme(name) {
+    document.documentElement.dataset.theme = name;
+    try {
+      localStorage.setItem(THEME_KEY, name);
+    } catch {
+      /* private mode — the choice just won't survive a reload */
+    }
+    const btn = $('#themeToggle');
+    if (btn) btn.setAttribute('aria-label', `Switch to ${name === 'dark' ? 'light' : 'dark'} theme`);
+  }
+
+  function initTheme() {
+    const btn = $('#themeToggle');
+    if (!btn) return;
+    setTheme(document.documentElement.dataset.theme || 'dark');
+    btn.addEventListener('click', () => {
+      setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+    });
+  }
+
+  /* --------------------------------------------------- Reading position */
+
+  /**
+   * The guide is linear, so the chrome shows where you are rather than offering
+   * somewhere else to go: a progress bar, and the chapter you are currently in.
+   */
+  function initChrome(chapters) {
+    const topbar = $('#topbar');
     const progress = $('#scrollProgress');
-    const links = $$('#navLinks a');
-    const sections = links
-      .map((a) => document.querySelector(a.getAttribute('href')))
-      .filter(Boolean);
+    const whereN = $('#whereN');
+    const whereTitle = $('#whereTitle');
+
+    const marks = [{ n: '00', title: 'Italy', el: $('#cover') }].concat(
+      (chapters || []).map((c) => ({ n: c.n, title: c.title, el: document.getElementById(c.id) }))
+    ).filter((m) => m.el);
+
+    let shown = null;
 
     const onScroll = () => {
       const y = window.scrollY;
-      nav.classList.toggle('stuck', y > 40);
+      topbar.classList.toggle('stuck', y > 40);
 
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      progress.style.width = `${max > 0 ? (y / max) * 100 : 0}%`;
+      progress.style.width = `${max > 0 ? Math.min(100, (y / max) * 100) : 0}%`;
 
-      let current = -1;
-      sections.forEach((section, i) => {
-        if (section.getBoundingClientRect().top <= window.innerHeight * 0.35) current = i;
+      let current = marks[0];
+      marks.forEach((m) => {
+        if (m.el.getBoundingClientRect().top <= window.innerHeight * 0.4) current = m;
       });
-      links.forEach((a, i) => a.classList.toggle('active', i === current));
+
+      if (current !== shown) {
+        shown = current;
+        whereN.textContent = current.n;
+        whereTitle.textContent = current.title;
+        $('#topbarWhere').classList.toggle('is-cover', current.n === '00');
+      }
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-
-    const toggle = $('#navToggle');
-    const menu = $('#navLinks');
-    toggle.addEventListener('click', () => {
-      const open = menu.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', String(open));
-    });
-    menu.addEventListener('click', (e) => {
-      if (e.target.tagName === 'A') {
-        menu.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-      }
-    });
   }
 
-  /** Smoothly scroll an element into view, accounting for the fixed nav. */
+  /** Smoothly scroll an element into view, accounting for the fixed top bar. */
   function scrollToEl(target) {
     const node = typeof target === 'string' ? $(target) : target;
     if (!node) return;
-    const top = node.getBoundingClientRect().top + window.scrollY - 76;
+    const top = node.getBoundingClientRect().top + window.scrollY - 64;
     window.scrollTo({ top, behavior: 'smooth' });
   }
 
-  return { $, $$, esc, rich, img, imgTag, openModal, closeModal, openImage, observeReveals, initChrome, scrollToEl };
+  return {
+    $, $$, esc, rich, img, imgTag,
+    openModal, closeModal, openImage,
+    observeReveals, initTheme, initChrome, scrollToEl,
+  };
 })();
