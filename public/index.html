@@ -49,11 +49,18 @@
         <span>Discover&nbsp;<em>Italy</em></span>
       </div>
 
-      <!-- Reading position, not a menu: the guide is meant to be read in order. -->
-      <div class="topbar-where" id="topbarWhere" aria-live="polite">
-        <span class="where-n" id="whereN">00</span>
-        <span class="where-title" id="whereTitle">Italy</span>
-      </div>
+      <!-- One link per chapter, filled in by app.js from the chapter list. -->
+      <nav class="nav-links" id="navLinks" aria-label="Chapters"></nav>
+
+      <button
+        class="nav-toggle"
+        id="navToggle"
+        type="button"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
 
       <button
         class="theme-toggle"
@@ -534,6 +541,11 @@
         <div class="colophon" id="colophon"></div>
       </div>
     </footer>
+
+    <!-- ══════════════════════════ Back to top ══════════════════════════ -->
+    <button class="to-top" id="toTop" type="button" aria-label="Back to top">
+      <span aria-hidden="true">↑</span>
+    </button>
 
     <!-- ══════════════════════════ Lightbox ══════════════════════════ -->
     <div

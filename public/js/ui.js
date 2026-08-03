@@ -145,54 +145,101 @@ const UI = (() => {
     });
   }
 
-  /* --------------------------------------------------- Reading position */
+  /* ------------------------------------------------ Nav, progress, to-top */
 
   /**
-   * The guide is linear, so the chrome shows where you are rather than offering
-   * somewhere else to go: a progress bar, and the chapter you are currently in.
+   * The top bar: a progress rule, one link per chapter that highlights as you
+   * pass through it, a hamburger for narrow screens, and the back-to-top
+   * button that appears once you have left the cover.
    */
-  function initChrome(chapters) {
+  function initChrome() {
     const topbar = $('#topbar');
     const progress = $('#scrollProgress');
-    const whereN = $('#whereN');
-    const whereTitle = $('#whereTitle');
+    const toTop = $('#toTop');
+    const menu = $('#navLinks');
+    const toggle = $('#navToggle');
 
-    const marks = [{ n: '00', title: 'Italy', el: $('#cover') }].concat(
-      (chapters || []).map((c) => ({ n: c.n, title: c.title, el: document.getElementById(c.id) }))
-    ).filter((m) => m.el);
-
-    let shown = null;
+    const links = $$('#navLinks a');
+    const sections = links
+      .map((a) => document.querySelector(a.getAttribute('href')))
+      .filter(Boolean);
 
     const onScroll = () => {
       const y = window.scrollY;
       topbar.classList.toggle('stuck', y > 40);
+      toTop.classList.toggle('visible', y > window.innerHeight * 0.9);
 
       const max = document.documentElement.scrollHeight - window.innerHeight;
       progress.style.width = `${max > 0 ? Math.min(100, (y / max) * 100) : 0}%`;
 
-      let current = marks[0];
-      marks.forEach((m) => {
-        if (m.el.getBoundingClientRect().top <= window.innerHeight * 0.4) current = m;
+      let current = -1;
+      sections.forEach((section, i) => {
+        if (section.getBoundingClientRect().top <= window.innerHeight * 0.4) current = i;
       });
-
-      if (current !== shown) {
-        shown = current;
-        whereN.textContent = current.n;
-        whereTitle.textContent = current.title;
-        $('#topbarWhere').classList.toggle('is-cover', current.n === '00');
-      }
+      links.forEach((a, i) => a.classList.toggle('active', i === current));
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+    }
+
+    // Handled here rather than by the browser so the landing position gets the
+    // correction pass in scrollToEl — and so the menu closes behind you.
+    menu.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (!link) return;
+      e.preventDefault();
+      menu.classList.remove('open');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      scrollToEl(link.getAttribute('href'));
+    });
   }
 
-  /** Smoothly scroll an element into view, accounting for the fixed top bar. */
+  /**
+   * Smoothly scroll an element into view, accounting for the fixed top bar.
+   *
+   * The correction pass is not optional: photographs between here and the
+   * target are lazy, and each one that resolves its height while we are
+   * travelling pushes the target further down — a plain anchor jump lands
+   * several hundred pixels short. So once the scroll has settled, re-measure
+   * and close whatever gap opened up.
+   */
   function scrollToEl(target) {
     const node = typeof target === 'string' ? $(target) : target;
     if (!node) return;
-    const top = node.getBoundingClientRect().top + window.scrollY - 64;
-    window.scrollTo({ top, behavior: 'smooth' });
+
+    const topOf = () => node.getBoundingClientRect().top + window.scrollY - 64;
+    window.scrollTo({ top: topOf(), behavior: 'smooth' });
+
+    let rounds = 0;
+    const settle = () => {
+      let last = null;
+      let still = 0;
+      const tick = () => {
+        const y = Math.round(window.scrollY);
+        still = y === last ? still + 1 : 0;
+        last = y;
+        if (still < 3) return requestAnimationFrame(tick);
+
+        const gap = topOf() - window.scrollY;
+        if (Math.abs(gap) > 8 && rounds < 4) {
+          rounds += 1;
+          window.scrollTo({ top: topOf(), behavior: 'smooth' });
+          requestAnimationFrame(settle);
+        }
+        return undefined;
+      };
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(settle);
   }
 
   return {

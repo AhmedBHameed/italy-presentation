@@ -68,6 +68,7 @@
       renderCover();
       renderDestinationChapters(); // sections must exist before heads/turns are filled
       renderChapterFrames();
+      renderNav(); // must run before initChrome, which wires the links up
 
       renderCountry();
       renderAtlas();
@@ -79,7 +80,7 @@
       renderFooter();
 
       UI.initTheme();
-      UI.initChrome(DATA.chapters);
+      UI.initChrome();
       UI.observeReveals();
       ItalyMap.drawCoverMap("#coverMap");
 
@@ -103,6 +104,18 @@
       </div>
       <h2 class="chapter-title">${esc(c.title)}</h2>
       ${c.blurb ? `<p class="chapter-blurb">${esc(c.blurb)}</p>` : ""}`;
+  }
+
+  /** The top-bar menu: one jump link per chapter, in reading order. */
+  function renderNav() {
+    $("#navLinks").innerHTML = DATA.chapters
+      .map(
+        (c) => `
+      <a href="#${esc(c.id)}" title="${esc(c.title)}">
+        <i>${esc(c.n)}</i>${esc(c.short || c.title)}
+      </a>`,
+      )
+      .join("");
   }
 
   function renderChapterFrames() {

@@ -486,35 +486,64 @@ mark {
   color: var(--gold);
 }
 
-/* Reading position — deliberately not a menu. */
-.topbar-where {
+/* ---- Chapter menu ---- */
+
+.nav-links {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 2px;
   min-width: 0;
-  opacity: 1;
-  transition: opacity 0.3s var(--ease);
 }
-.topbar-where.is-cover {
-  opacity: 0;
-}
-.where-n {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: var(--gold-ink);
-  background: var(--gold);
-  border-radius: 5px;
-  padding: 3px 7px;
-  flex: none;
-}
-.where-title {
+.nav-links a {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 11px;
+  border-radius: 999px;
   font-size: 13.5px;
   color: var(--text-dim);
+  text-decoration: none;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  transition: color 0.22s var(--ease), background 0.22s var(--ease);
+}
+.nav-links a i {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  transition: color 0.22s var(--ease);
+}
+.nav-links a:hover {
+  color: var(--text);
+  background: var(--tint);
+}
+.nav-links a.active {
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 13%, transparent);
+}
+.nav-links a.active i,
+.nav-links a:hover i {
+  color: var(--gold);
+}
+
+.nav-toggle {
+  display: none;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--tint);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  transition: border-color 0.22s var(--ease), color 0.22s var(--ease);
+}
+.nav-toggle:hover {
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 /* ---- Theme switch ---- */
@@ -580,6 +609,42 @@ html[data-theme="light"] .icon-sun {
 html[data-theme="light"] .icon-moon {
   opacity: 0;
   transform: rotate(90deg) scale(0.6);
+}
+
+/* ========================================================== Back to top */
+
+.to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 26px;
+  z-index: 105;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-dim);
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(14px) scale(0.92);
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease),
+    border-color 0.22s var(--ease), background 0.22s var(--ease),
+    color 0.22s var(--ease);
+}
+.to-top.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.to-top:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--gold-ink);
 }
 
 /* ================================================================ Cover */
@@ -3221,6 +3286,43 @@ html[data-theme="light"] .cover-band {
 /* =========================================================== Responsive */
 
 @media (max-width: 1180px) {
+  /* Nine links no longer fit across the bar, so they fold into a menu. */
+  .nav-toggle {
+    display: block;
+    margin-left: auto;
+  }
+  .nav-links {
+    position: fixed;
+    top: 60px;
+    right: 14px;
+    margin: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+    width: 234px;
+    padding: 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.25s var(--ease), transform 0.25s var(--ease),
+      visibility 0.25s;
+  }
+  .nav-links.open {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .nav-links a {
+    border-radius: var(--radius-sm);
+    font-size: 14.5px;
+    padding: 10px 12px;
+  }
+
   .atlas {
     grid-template-columns: 1fr;
   }
@@ -3298,8 +3400,11 @@ html[data-theme="light"] .cover-band {
 }
 
 @media (max-width: 620px) {
-  .topbar-where {
-    display: none;
+  .to-top {
+    right: 16px;
+    bottom: 18px;
+    width: 42px;
+    height: 42px;
   }
   /* On a phone the flag map sits behind the copy, so it drops back to a wash. */
   .cover-map {

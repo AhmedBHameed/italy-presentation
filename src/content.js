@@ -18,6 +18,7 @@
 const chapters = [
   {
     id: 'atlas',
+    short: 'Regions',
     n: '01',
     title: 'Twenty regions, five on the route',
     kicker: 'the country',
@@ -25,6 +26,7 @@ const chapters = [
   },
   {
     id: 'planning',
+    short: 'Planning',
     n: '02',
     title: 'Planning the trip',
     kicker: 'four decisions',
@@ -32,6 +34,7 @@ const chapters = [
   },
   {
     id: 'rome',
+    short: 'Rome',
     n: '03',
     title: 'Rome, the Eternal City',
     kicker: 'Lazio · 3–4 days',
@@ -39,6 +42,7 @@ const chapters = [
   },
   {
     id: 'vatican',
+    short: 'Vatican',
     n: '04',
     title: 'Inside Vatican City',
     kicker: 'a country inside a city',
@@ -46,6 +50,7 @@ const chapters = [
   },
   {
     id: 'rome-on-foot',
+    short: 'On foot',
     n: '05',
     title: 'Rome on foot',
     kicker: '6.55 km, end to end',
@@ -53,6 +58,7 @@ const chapters = [
   },
   {
     id: 'tuscany',
+    short: 'Florence',
     n: '06',
     title: 'Florence & Pisa',
     kicker: 'Tuscany · 2–3 days',
@@ -60,6 +66,7 @@ const chapters = [
   },
   {
     id: 'venice',
+    short: 'Venice',
     n: '07',
     title: 'Venice',
     kicker: 'Veneto · 2 days',
@@ -67,6 +74,7 @@ const chapters = [
   },
   {
     id: 'milan',
+    short: 'Milan',
     n: '08',
     title: 'Milan',
     kicker: 'Lombardy · 2 days',
@@ -74,6 +82,7 @@ const chapters = [
   },
   {
     id: 'naples',
+    short: 'Naples',
     n: '09',
     title: 'Naples & the Amalfi Coast',
     kicker: 'Campania · 3 days',
